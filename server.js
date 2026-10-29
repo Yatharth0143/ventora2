@@ -116,7 +116,10 @@ if (process.env.NODE_ENV === 'production') {
   app.get('*', (_, res) => res.sendFile(path.join(here, 'dist', 'index.html')));
 }
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
+
+app.get('/', (req, res) => res.send('Ventora API is running'));
+
 connectDB().then(() => app.listen(port, () => console.log(`Ventora API running on http://localhost:${port}`))).catch((error) => {
   console.error(error.message);
   process.exit(1);

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ventora — Wireframes</title>
+<style>
+  :root{
+    --ink:#1a1a1a; --line:#9a9a9a; --fill:#e8e8e8; --fill2:#d4d4d4;
+    --bg:#f4f4f4; --paper:#ffffff; --accent:#555;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Arial,sans-serif;}
+  body{background:var(--bg);color:var(--ink);display:flex;min-height:100vh;}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{width:260px;background:#222;color:#eee;position:fixed;top:0;bottom:0;left:0;overflow-y:auto;padding:20px 0;}
+  .sidebar h1{font-size:20px;padding:0 20px 4px;letter-spacing:1px;}
+  .sidebar .sub{font-size:11px;color:#999;padding:0 20px 16px;border-bottom:1px solid #444;}
+  .sidebar .group{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:#888;padding:16px 20px 6px;}
+  .sidebar a{display:block;padding:8px 20px;font-size:13px;color:#ccc;text-decoration:none;cursor:pointer;border-left:3px solid transparent;}
+  .sidebar a:hover{background:#333;color:#fff;}
+  .sidebar a.active{background:#333;color:#fff;border-left-color:#fff;}
+
+  /* ---------- Main ---------- */
+  .main{margin-left:260px;flex:1;padding:30px 40px 80px;}
+  .screen{display:none;}
+  .screen.active{display:block;}
+  .screen-head{margin-bottom:14px;}
+  .screen-head h2{font-size:22px;}
+  .screen-head p{font-size:13px;color:#666;margin-top:4px;max-width:820px;line-height:1.5;}
+
+  /* ---------- Browser frame ---------- */
+  .browser{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);max-width:1100px;}
+  .browser-bar{background:var(--fill);border-bottom:1px solid var(--line);padding:8px 14px;display:flex;align-items:center;gap:8px;}
+  .dot{width:10px;height:10px;border-radius:50%;background:#bbb;}
+  .url{flex:1;background:#fff;border:1px solid var(--line);border-radius:4px;font-size:11px;color:#777;padding:3px 10px;}
+  .viewport{padding:0;min-height:560px;background:#fff;}
+
+  /* ---------- Wireframe primitives ---------- */
+  .wf-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:2px solid var(--ink);}
+  .wf-logo{font-weight:800;font-size:18px;letter-spacing:2px;border:2px solid var(--ink);padding:4px 12px;}
+  .wf-navlinks{display:flex;gap:22px;font-size:13px;color:#555;}
+  .wf-navlinks span{border-bottom:1px dashed #999;padding-bottom:2px;}
+  .btn{display:inline-block;border:2px solid var(--ink);padding:7px 18px;font-size:13px;font-weight:600;background:#fff;cursor:default;text-align:center;}
+  .btn.solid{background:var(--ink);color:#fff;}
+  .btn.sm{padding:4px 12px;font-size:11px;}
+  .btn.ghost{border-style:dashed;color:#666;border-color:#999;font-weight:400;}
+
+  .box{border:1.5px solid var(--line);background:var(--fill);display:flex;align-items:center;justify-content:center;color:#888;font-size:12px;text-align:center;padding:10px;}
+  .box.dashed{border-style:dashed;background:#fafafa;}
+  .img-ph{position:relative;background:var(--fill2);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;color:#777;font-size:12px;overflow:hidden;}
+  .img-ph::before,.img-ph::after{content:"";position:absolute;background:#bbb;width:200%;height:1.5px;left:-50%;}
+  .img-ph::before{transform:rotate(24deg);}
+  .img-ph::after{transform:rotate(-24deg);}
+  .img-ph span{position:relative;z-index:2;background:var(--fill2);padding:2px 8px;}
+
+  .line{height:10px;background:var(--fill2);border-radius:2px;margin:6px 0;}
+  .line.w40{width:40%;}.line.w60{width:60%;}.line.w80{width:80%;}
+  .label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#444;margin-bottom:6px;}
+  .field{border:1.5px solid var(--line);background:#fff;padding:9px 12px;font-size:12px;color:#999;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+  .field .ph{font-style:italic;}
+  .chip{display:inline-block;border:1.5px solid var(--line);border-radius:20px;padding:4px 14px;font-size:11px;color:#555;margin:3px 4px 3px 0;background:#fff;}
+  .chip.on{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .tag{display:inline-block;background:var(--fill2);border:1px solid var(--line);font-size:10px;padding:2px 8px;border-radius:3px;color:#444;font-weight:600;}
+  .avatar{width:38px;height:38px;border-radius:50%;background:var(--fill2);border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;color:#777;flex-shrink:0;}
+  .card{border:1.5px solid var(--line);background:#fff;padding:16px;}
+  .stat{border:1.5px solid var(--line);background:#fff;padding:14px;text-align:center;}
+  .stat .num{font-size:24px;font-weight:800;}
+  .stat .cap{font-size:11px;color:#777;text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+  .score-ring{width:110px;height:110px;border-radius:50%;border:10px solid var(--fill2);border-top-color:#333;border-right-color:#333;display:flex;align-items:center;justify-content:center;margin:0 auto;}
+  .score-ring b{font-size:24px;}
+  .divider{border:none;border-top:1px dashed var(--line);margin:18px 0;}
+  .lock{display:inline-block;border:1.5px solid var(--ink);padding:2px 8px;font-size:10px;font-weight:700;background:var(--fill);}
+  .token{display:inline-flex;align-items:center;gap:5px;border:1.5px solid var(--ink);border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;background:#fff;}
+  .token i{width:10px;height:10px;border-radius:50%;background:var(--ink);display:inline-block;}
+
+  /* annotation */
+  .annot{margin-top:16px;max-width:1100px;background:#fffbe6;border:1px dashed #c9b458;padding:14px 18px;font-size:12.5px;line-height:1.65;color:#5a4d12;}
+  .annot b{color:#3d3405;}
+  .annot ul{margin:6px 0 0 18px;}
+
+  /* layout helpers */
+  .row{display:flex;gap:20px;}
+  .col{flex:1;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .pad{padding:24px 28px;}
+  .mt{margin-top:16px;} .mb{margin-bottom:16px;}
+  .center{text-align:center;}
+  .flexb{display:flex;justify-content:space-between;align-items:center;}
+  .flexs{display:flex;gap:10px;align-items:center;}
+
+  /* app shell (dashboards) */
+  .app-shell{display:flex;min-height:560px;}
+  .app-side{width:190px;border-right:2px solid var(--ink);padding:18px 0;background:#fafafa;flex-shrink:0;}
+  .app-side .navitem{padding:9px 20px;font-size:12.5px;color:#555;border-left:3px solid transparent;}
+  .app-side .navitem.on{border-left-color:var(--ink);font-weight:700;color:var(--ink);background:var(--fill);}
+  .app-main{flex:1;padding:22px 26px;}
+  .app-top{display:flex;justify-content:space-between;align-items:center;padding:12px 26px;border-bottom:1.5px solid var(--line);background:#fff;}
+
+  table.wf{width:100%;border-collapse:collapse;font-size:12px;}
+  table.wf th{border:1.5px solid var(--line);background:var(--fill);padding:8px 10px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;}
+  table.wf td{border:1.5px solid var(--line);padding:9px 10px;color:#555;}
+
+  .chat-wrap{display:flex;height:480px;border-top:1.5px solid var(--line);}
+  .chat-list{width:250px;border-right:1.5px solid var(--line);overflow:hidden;}
+  .chat-item{display:flex;gap:10px;padding:12px;border-bottom:1px solid #ddd;align-items:center;}
+  .chat-item.on{background:var(--fill);}
+  .chat-main{flex:1;display:flex;flex-direction:column;}
+  .chat-body{flex:1;padding:18px;background:#fafafa;overflow:hidden;}
+  .bubble{max-width:60%;padding:9px 14px;font-size:12.5px;margin-bottom:10px;border:1.5px solid var(--line);}
+  .bubble.me{margin-left:auto;background:var(--fill2);}
+  .bubble.them{background:#fff;}
+  .chat-input{border-top:1.5px solid var(--line);padding:12px;display:flex;gap:10px;}
+
+  .progress{height:12px;border:1.5px solid var(--line);background:#fff;position:relative;}
+  .progress i{position:absolute;left:0;top:0;bottom:0;background:var(--fill2);border-right:1.5px solid var(--line);}
+
+  .banner{border:1.5px dashed var(--line);background:#fafafa;padding:10px 16px;font-size:11.5px;color:#666;display:flex;gap:10px;align-items:center;}
+  .banner .ic{width:18px;height:18px;border:1.5px solid var(--line);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;}
+
+  .footer-strip{border-top:2px solid var(--ink);padding:20px 28px;display:flex;justify-content:space-between;font-size:11px;color:#777;background:#fafafa;}
+
+  @media(max-width:900px){.sidebar{display:none}.main{margin-left:0;padding:16px}}
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <h1>VENTORA</h1>
+  <div class="sub">Low-Fidelity Wireframes v1.0<br>Innovator–Investor Connection Platform</div>
+  <div class="group">Public</div>
+  <a data-s="landing" class="active">01 · Landing Page</a>
+  <a data-s="signup">02 · Sign Up / Role Select</a>
+  <a data-s="login">03 · Login</a>
+  <div class="group">Innovator</div>
+  <a data-s="innov-dash">04 · Innovator Dashboard</a>
+  <a data-s="idea-form">05 · Idea Submission Form</a>
+  <a data-s="ai-score">06 · AI Completeness Result</a>
+  <a data-s="requests">07 · Connection Requests</a>
+  <div class="group">Investor</div>
+  <a data-s="invest-onboard">08 · KYC + Preferences</a>
+  <a data-s="feed">09 · Personalized Feed</a>
+  <a data-s="idea-preview">10 · Idea Preview (Limited)</a>
+  <div class="group">Shared</div>
+  <a data-s="chat">11 · Chat</a>
+  <a data-s="admin">12 · Admin Dashboard</a>
+</nav>
+
+<main class="main">
+
+<!-- ============ 01 LANDING ============ -->
+<section class="screen active" id="landing">
+  <div class="screen-head">
+    <h2>01 · Landing Page</h2>
+    <p>Public entry point. Communicates the value proposition for both user types, sets trust expectations (verification, controlled disclosure), and routes visitors to role-based sign-up.</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/</span></div>
+    <div class="viewport">
+      <div class="wf-nav">
+        <div class="wf-logo">VENTORA</div>
+        <div class="wf-navlinks"><span>How it works</span><span>For Innovators</span><span>For Investors</span><span>About</span></div>
+        <div class="flexs"><span class="btn sm">Log in</span><span class="btn sm solid">Get started</span></div>
+      </div>
+      <div class="pad row" style="align-items:center;">
+        <div class="col">
+          <div class="label">Hero — headline</div>
+          <div style="font-size:30px;font-weight:800;line-height:1.25;">Where bold ideas meet the right investors.</div>
+          <div class="line w80"></div><div class="line w60"></div>
+          <div class="mt flexs">
+            <span class="btn solid">I have an idea →</span>
+            <span class="btn">I'm an investor →</span>
+          </div>
+          <div class="mt flexs" style="gap:16px;font-size:11px;color:#777;">
+            <span>✓ Verified investors</span><span>✓ Controlled disclosure</span><span>✓ AI idea scoring</span>
+          </div>
+        </div>
+        <div class="col"><div class="img-ph" style="height:280px;"><span>Hero illustration</span></div></div>
+      </div>
+      <hr class="divider">
+      <div class="pad">
+        <div class="label center">How it works — 4 steps</div>
+        <div class="grid4 mt">
+          <div class="card center"><div class="box" style="height:54px;margin-bottom:10px;">Icon</div><b style="font-size:13px;">1. Submit idea</b><div class="line"></div><div class="line w80"></div></div>
+          <div class="card center"><div class="box" style="height:54px;margin-bottom:10px;">Icon</div><b style="font-size:13px;">2. AI completeness score</b><div class="line"></div><div class="line w80"></div></div>
+          <div class="card center"><div class="box" style="height:54px;margin-bottom:10px;">Icon</div><b style="font-size:13px;">3. Matched feed</b><div class="line"></div><div class="line w80"></div></div>
+          <div class="card center"><div class="box" style="height:54px;margin-bottom:10px;">Icon</div><b style="font-size:13px;">4. Connect &amp; chat</b><div class="line"></div><div class="line w80"></div></div>
+        </div>
+      </div>
+      <div class="pad" style="background:#fafafa;border-top:1.5px solid var(--line);">
+        <div class="grid2">
+          <div class="card"><div class="label">For innovators</div><div class="line"></div><div class="line w80"></div><div class="line w60"></div><span class="btn sm mt">Start as innovator</span></div>
+          <div class="card"><div class="label">For investors</div><div class="line"></div><div class="line w80"></div><div class="line w60"></div><span class="btn sm mt">Start as investor</span></div>
+        </div>
+      </div>
+      <div class="footer-strip"><span>© Ventora — academic project</span><span>Disclaimer: Ventora does not process investments. Deals happen offline.</span></div>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>Dual CTAs route visitors into role-based registration (Innovator vs Investor) — matches the two user types in the synopsis.</li>
+      <li>Trust markers (verification, controlled disclosure, AI score) address the problem statement: idea theft and spam fears.</li>
+      <li>Footer disclaimer reinforces that Ventora is a connection platform, not a transaction platform.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 02 SIGNUP ============ -->
+<section class="screen" id="signup">
+  <div class="screen-head">
+    <h2>02 · Sign Up / Role Selection</h2>
+    <p>Registration starts with choosing a role, because Innovator and Investor flows diverge immediately after (idea submission vs KYC + preferences).</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/signup</span></div>
+    <div class="viewport pad" style="max-width:760px;margin:0 auto;">
+      <div class="center mt"><div class="wf-logo" style="display:inline-block;">VENTORA</div></div>
+      <h3 class="center mt" style="font-size:20px;">Create your account</h3>
+      <p class="center" style="font-size:12px;color:#777;margin:6px 0 20px;">Step 1 of 2 — choose how you'll use Ventora</p>
+      <div class="grid2">
+        <div class="card center" style="border-width:2.5px;border-color:var(--ink);">
+          <div class="box" style="height:70px;margin-bottom:12px;">Icon: lightbulb</div>
+          <b>I'm an Innovator</b>
+          <div class="line"></div><div class="line w80"></div>
+          <p style="font-size:11px;color:#777;margin:8px 0 12px;">Present your startup idea, get an AI completeness score, receive investor requests.</p>
+          <span class="btn solid" style="display:block;">Continue as Innovator</span>
+        </div>
+        <div class="card center">
+          <div class="box" style="height:70px;margin-bottom:12px;">Icon: briefcase</div>
+          <b>I'm an Investor</b>
+          <div class="line"></div><div class="line w80"></div>
+          <p style="font-size:11px;color:#777;margin:8px 0 12px;">Discover matched startups, verify identity (KYC), connect using tokens.</p>
+          <span class="btn" style="display:block;">Continue as Investor</span>
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="label">Account details</div>
+      <div class="field"><span class="ph">Full name</span></div>
+      <div class="field"><span class="ph">Email address</span></div>
+      <div class="field"><span class="ph">Password (min. 8 chars)</span><span class="tag">bcrypt hashed</span></div>
+      <div class="field"><span class="ph">Confirm password</span></div>
+      <div class="flexs" style="font-size:11px;color:#777;margin-bottom:14px;"><span class="box" style="width:16px;height:16px;padding:0;"></span> I agree to the Terms &amp; Privacy Policy</div>
+      <span class="btn solid" style="display:block;">Create account</span>
+      <p class="center mt" style="font-size:12px;color:#777;">Already have an account? <u>Log in</u></p>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>Role selection gates everything downstream: Innovators → idea form; Investors → KYC + preference setup.</li>
+      <li>Password field notes hashing (bcrypt/Argon2) per the security module.</li>
+      <li>Investor card sets the expectation of KYC early to filter low-intent sign-ups.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 03 LOGIN ============ -->
+<section class="screen" id="login">
+  <div class="screen-head">
+    <h2>03 · Login</h2>
+    <p>Standard JWT-based login. On success, users are routed by role to the correct dashboard.</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/login</span></div>
+    <div class="viewport pad" style="max-width:460px;margin:0 auto;">
+      <div class="center mt"><div class="wf-logo" style="display:inline-block;">VENTORA</div></div>
+      <h3 class="center mt" style="font-size:20px;">Welcome back</h3>
+      <div class="mt"><div class="label">Email</div><div class="field"><span class="ph">you@example.com</span></div></div>
+      <div><div class="label">Password</div><div class="field"><span class="ph">••••••••</span><u style="font-size:11px;">Forgot?</u></div></div>
+      <span class="btn solid" style="display:block;">Log in</span>
+      <div class="banner mt"><span class="ic">i</span> New device? We'll email you a verification link before issuing a session token (JWT).</div>
+      <hr class="divider">
+      <span class="btn ghost" style="display:block;">Continue with Google (optional)</span>
+      <p class="center mt" style="font-size:12px;color:#777;">No account yet? <u>Sign up</u></p>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>Role-based redirect after login: Innovator → Dashboard (04), Investor → Feed (09), Admin → Admin (12).</li>
+      <li>Session handled via JWT per the proposed stack; OAuth is optional and secondary.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 04 INNOVATOR DASHBOARD ============ -->
+<section class="screen" id="innov-dash">
+  <div class="screen-head">
+    <h2>04 · Innovator Dashboard</h2>
+    <p>Home base for innovators: idea portfolio with AI scores and visibility status, incoming investor requests, and quick actions.</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/dashboard</span></div>
+    <div class="viewport">
+      <div class="app-top">
+        <div class="wf-logo" style="font-size:14px;">VENTORA</div>
+        <div class="flexs">
+          <span class="box" style="width:26px;height:26px;padding:0;" title="Notifications">🔔</span>
+          <span class="avatar">RS</span>
+        </div>
+      </div>
+      <div class="app-shell">
+        <div class="app-side">
+          <div class="navitem on">Dashboard</div>
+          <div class="navitem">My Ideas</div>
+          <div class="navitem">+ Submit New Idea</div>
+          <div class="navitem">Requests <span class="tag">3 new</span></div>
+          <div class="navitem">Messages</div>
+          <div class="navitem">Profile &amp; Settings</div>
+        </div>
+        <div class="app-main">
+          <div class="flexb mb">
+            <div><b style="font-size:17px;">Welcome back, Innovator</b><div style="font-size:12px;color:#777;">Here's how your ideas are performing.</div></div>
+            <span class="btn solid sm">+ Submit new idea</span>
+          </div>
+          <div class="grid4 mb">
+            <div class="stat"><div class="num">3</div><div class="cap">Ideas submitted</div></div>
+            <div class="stat"><div class="num">2</div><div class="cap">Published</div></div>
+            <div class="stat"><div class="num">12</div><div class="cap">Investor views</div></div>
+            <div class="stat"><div class="num">3</div><div class="cap">Pending requests</div></div>
+          </div>
+          <div class="label">My ideas</div>
+          <table class="wf">
+            <tr><th>Idea</th><th>AI Score</th><th>Status</th><th>Visibility</th><th>Requests</th><th></th></tr>
+            <tr><td>AgriDrone Analytics</td><td><b>86</b>/100</td><td><span class="tag">Published</span></td><td>Limited</td><td>2</td><td><u>Manage</u></td></tr>
+            <tr><td>CampusKart</td><td><b>71</b>/100</td><td><span class="tag">Published</span></td><td>Limited</td><td>1</td><td><u>Manage</u></td></tr>
+            <tr><td>MediQueue</td><td><b>54</b>/100</td><td><span class="tag" style="background:#fff;border-style:dashed;">Draft</span></td><td>Hidden</td><td>—</td><td><u>Improve</u></td></tr>
+          </table>
+          <div class="banner mt"><span class="ic">!</span> <b>MediQueue</b>&nbsp;scored 54 — the AI flagged <u>revenue model</u> and <u>competitors</u> as weak. Improve it before publishing.</div>
+          <div class="mt">
+            <div class="label">Latest connection requests</div>
+            <div class="card flexb mb"><div class="flexs"><span class="avatar">VK</span><div><b style="font-size:13px;">Verified Investor · Angel</b><div style="font-size:11px;color:#777;">Interested in AgriDrone Analytics · Fintech &amp; Agri focus</div></div></div><div class="flexs"><span class="btn sm solid">Accept</span><span class="btn sm">Decline</span></div></div>
+            <div class="card flexb"><div class="flexs"><span class="avatar">SP</span><div><b style="font-size:13px;">Verified Investor · Seed Fund</b><div style="font-size:11px;color:#777;">Interested in CampusKart · Wants pitch deck access</div></div></div><div class="flexs"><span class="btn sm solid">Accept</span><span class="btn sm">Decline</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>AI completeness score is surfaced per idea; drafts below threshold nudge innovators to improve before publishing (Objective 2 &amp; 4).</li>
+      <li>"Visibility: Limited" reflects controlled disclosure — only teaser fields are public.</li>
+      <li>Requests table links to screen 07; accepting unlocks chat (screen 11).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 05 IDEA FORM ============ -->
+<section class="screen" id="idea-form">
+  <div class="screen-head">
+    <h2>05 · Idea Submission Form</h2>
+    <p>Structured multi-section form. Sections map 1:1 to what the AI completeness checker analyzes. Autosaves as draft.</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/ideas/new</span></div>
+    <div class="viewport">
+      <div class="app-top"><div class="wf-logo" style="font-size:14px;">VENTORA</div><div class="flexs"><span style="font-size:11px;color:#777;">Draft autosaved 2 min ago</span><span class="avatar">RS</span></div></div>
+      <div class="app-shell">
+        <div class="app-side">
+          <div class="label" style="padding:0 20px 8px;">Sections</div>
+          <div class="navitem on">1 · Basics</div>
+          <div class="navitem">2 · Problem</div>
+          <div class="navitem">3 · Solution</div>
+          <div class="navitem">4 · Target users</div>
+          <div class="navitem">5 · Market &amp; competitors</div>
+          <div class="navitem">6 · Business model</div>
+          <div class="navitem">7 · Funding requirement</div>
+          <div class="navitem">8 · Documents</div>
+          <div class="navitem">9 · Review &amp; submit</div>
+        </div>
+        <div class="app-main" style="max-width:720px;">
+          <b style="font-size:17px;">Section 1 — Basics</b>
+          <div class="progress mt mb"><i style="width:11%;"></i></div>
+          <div class="label">Startup / idea title *</div>
+          <div class="field"><span class="ph">e.g. AgriDrone Analytics</span></div>
+          <div class="grid2">
+            <div><div class="label">Industry *</div><div class="field"><span class="ph">Select industry</span><span>▾</span></div></div>
+            <div><div class="label">Startup stage *</div><div class="field"><span class="ph">Idea / MVP / Early traction…</span><span>▾</span></div></div>
+          </div>
+          <div class="label">One-line pitch *</div>
+          <div class="field"><span class="ph">140 characters — shown in the public feed</span><span class="tag">0/140</span></div>
+          <div class="label">Problem statement *</div>
+          <div class="field" style="height:110px;align-items:flex-start;"><span class="ph">What problem are you solving, and for whom? (min. 200 characters for a good AI score)</span></div>
+          <div class="banner mb"><span class="ic">🛡</span> Do <b>not</b>&nbsp;include confidential IP or trade secrets here. Detailed documents stay private until you approve access.</div>
+          <div class="label">Visibility for this section</div>
+          <span class="chip on">Public teaser</span><span class="chip">After request accepted</span><span class="chip">Private</span>
+          <hr class="divider">
+          <div class="flexb"><span class="btn ghost">Save draft</span><span class="btn solid">Next: Problem →</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>Sections mirror the AI checker's criteria: problem, solution, target audience, business model, market, competitors, revenue, funding, growth.</li>
+      <li>Per-section visibility chips implement "controlled, phased access" (Objective 6).</li>
+      <li>Disclaimer banner appears inline at every free-text field to prevent accidental IP disclosure.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 06 AI SCORE ============ -->
+<section class="screen" id="ai-score">
+  <div class="screen-head">
+    <h2>06 · AI Completeness Result</h2>
+    <p>Shown immediately after submission. The score measures information completeness only — explicitly not a success prediction.</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/ideas/agridrone/score</span></div>
+    <div class="viewport pad" style="max-width:860px;margin:0 auto;">
+      <div class="center"><div class="label">AI Completeness Analysis</div><h3 style="font-size:20px;">AgriDrone Analytics</h3></div>
+      <div class="row mt" style="align-items:center;">
+        <div style="width:200px;text-align:center;">
+          <div class="score-ring"><b>86</b></div>
+          <div style="font-size:11px;color:#777;margin-top:8px;">Completeness score / 100</div>
+        </div>
+        <div class="col">
+          <div class="label">Section breakdown</div>
+          <div class="mb" style="font-size:12px;">Problem statement <span style="float:right;">Strong</span></div><div class="progress mb"><i style="width:95%;"></i></div>
+          <div class="mb" style="font-size:12px;">Solution <span style="float:right;">Strong</span></div><div class="progress mb"><i style="width:90%;"></i></div>
+          <div class="mb" style="font-size:12px;">Market opportunity <span style="float:right;">Good</span></div><div class="progress mb"><i style="width:80%;"></i></div>
+          <div class="mb" style="font-size:12px;">Competitors <span style="float:right;color:#a00;">Weak ⚠</span></div><div class="progress mb"><i style="width:45%;"></i></div>
+          <div class="mb" style="font-size:12px;">Revenue model <span style="float:right;color:#a00;">Missing ⚠</span></div><div class="progress mb"><i style="width:10%;"></i></div>
+        </div>
+      </div>
+      <div class="banner mt"><span class="ic">AI</span> <b>Suggestions:</b>&nbsp;Add a revenue model (who pays, how much, how often). Name 2–3 competitors and your differentiator. Each fix re-runs the analysis instantly.</div>
+      <div class="banner mt" style="background:#fff;"><span class="ic">i</span> This score measures how <b>complete</b> your submission is. It is not a prediction of startup success or profitability.</div>
+      <hr class="divider">
+      <div class="flexb">
+        <span class="btn">← Improve weak sections</span>
+        <div class="flexs"><span class="btn ghost">Save as draft</span><span class="btn solid">Publish to investor feed</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>Per-section bars make the score explainable — innovators see exactly what to fix (missing-section detection).</li>
+      <li>"Improve weak sections" deep-links back into the form (screen 05) at the flagged section.</li>
+      <li>Disclaimer text is mandatory per the synopsis: score ≠ success guarantee.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 07 REQUESTS ============ -->
+<section class="screen" id="requests">
+  <div class="screen-head">
+    <h2>07 · Connection Requests (Innovator)</h2>
+    <p>Inbox of investor requests. Accept unlocks chat and (optionally) deeper documents; reject/ignore keeps everything sealed.</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/requests</span></div>
+    <div class="viewport">
+      <div class="app-top"><div class="wf-logo" style="font-size:14px;">VENTORA</div><div class="flexs"><span class="box" style="width:26px;height:26px;padding:0;">🔔</span><span class="avatar">RS</span></div></div>
+      <div class="app-shell">
+        <div class="app-side">
+          <div class="navitem">Dashboard</div><div class="navitem">My Ideas</div>
+          <div class="navitem on">Requests <span class="tag">3</span></div>
+          <div class="navitem">Messages</div><div class="navitem">Profile &amp; Settings</div>
+        </div>
+        <div class="app-main">
+          <div class="flexb mb"><b style="font-size:17px;">Connection requests</b>
+          <div class="flexs"><span class="chip on">Pending (3)</span><span class="chip">Accepted</span><span class="chip">Declined</span></div></div>
+          <div class="card mb">
+            <div class="flexb">
+              <div class="flexs">
+                <span class="avatar">VK</span>
+                <div>
+                  <b style="font-size:14px;">Investor #A-2417</b> <span class="tag">✓ KYC verified</span> <span class="tag">Angel</span>
+                  <div style="font-size:11.5px;color:#777;margin-top:3px;">Focus: AgriTech, SaaS · Stage: Idea–MVP · Range: ₹5–25L · 14 connections made</div>
+                </div>
+              </div>
+              <span class="token"><i></i> 1 token spent</span>
+            </div>
+            <hr class="divider">
+            <div style="font-size:12.5px;color:#444;">"Saw AgriDrone Analytics in my feed. Requesting access to the pitch deck and a chat about your pilot results."</div>
+            <div class="mt" style="font-size:12px;"><b>Requests access to:</b> <span class="chip">Pitch deck</span><span class="chip">Financial summary</span><span class="chip">Chat</span></div>
+            <div class="flexs mt" style="justify-content:flex-end;"><span class="btn sm ghost">Ignore</span><span class="btn sm">Decline</span><span class="btn sm solid">Accept &amp; open chat</span></div>
+          </div>
+          <div class="card mb" style="opacity:.85;">
+            <div class="flexb">
+              <div class="flexs"><span class="avatar">SP</span><div><b style="font-size:14px;">Investor #B-0932</b> <span class="tag">✓ KYC verified</span> <span class="tag">Seed fund</span><div style="font-size:11.5px;color:#777;margin-top:3px;">Focus: EdTech, Commerce · Range: ₹10–50L</div></div></div>
+              <span class="token"><i></i> 1 token spent</span>
+            </div>
+            <div class="flexs mt" style="justify-content:flex-end;"><span class="btn sm ghost">Ignore</span><span class="btn sm">Decline</span><span class="btn sm solid">Accept &amp; open chat</span></div>
+          </div>
+          <div class="banner"><span class="ic">i</span> Investor names stay partially masked until you accept. Report or block any profile from the ⋯ menu.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>Only KYC-verified investors can send requests; the badge is always visible (Objective 4).</li>
+      <li>"Token spent" indicator signals genuine intent — tokens are scarce by design (Objective 7).</li>
+      <li>Accept → chat unlocks + selected documents shared. Ignore/decline → nothing is revealed (Objective 8).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 08 INVESTOR ONBOARDING ============ -->
+<section class="screen" id="invest-onboard">
+  <div class="screen-head">
+    <h2>08 · Investor Onboarding — KYC + Preferences</h2>
+    <p>Two-step wizard after investor sign-up: identity verification (mock KYC for the prototype), then investment preferences that drive the personalized feed.</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/onboarding/investor</span></div>
+    <div class="viewport pad" style="max-width:820px;margin:0 auto;">
+      <div class="flexb mb"><b style="font-size:17px;">Investor setup</b><span style="font-size:12px;color:#777;">Step 1 of 2 — Identity verification</span></div>
+      <div class="progress mb"><i style="width:50%;"></i></div>
+      <div class="card mb">
+        <div class="label">Verify your identity (KYC)</div>
+        <p style="font-size:12px;color:#666;margin-bottom:14px;">Ventora only allows verified investors to view ideas and send requests. Prototype uses a mock verification flow — no real government IDs are stored.</p>
+        <div class="grid2">
+          <div><div class="label">Full legal name</div><div class="field"><span class="ph">As per ID</span></div></div>
+          <div><div class="label">Investor type</div><div class="field"><span class="ph">Angel / VC / Corporate…</span><span>▾</span></div></div>
+        </div>
+        <div class="img-ph" style="height:90px;"><span>Upload ID document (mock in prototype)</span></div>
+        <div class="flexs mt"><span class="btn sm solid">Submit for verification</span><span class="tag">Status: Pending review</span></div>
+      </div>
+      <div class="card">
+        <div class="label">Step 2 — Investment preferences</div>
+        <div class="label mt">Preferred industries</div>
+        <span class="chip on">AgriTech</span><span class="chip on">FinTech</span><span class="chip">HealthTech</span><span class="chip">EdTech</span><span class="chip">SaaS</span><span class="chip">D2C</span><span class="chip">CleanTech</span>
+        <div class="grid2 mt">
+          <div><div class="label">Startup stage</div><span class="chip on">Idea</span><span class="chip on">MVP</span><span class="chip">Early traction</span><span class="chip">Growth</span></div>
+          <div><div class="label">Investment range</div><div class="field"><span class="ph">₹5L — ₹25L</span><span>▾</span></div></div>
+        </div>
+        <div class="grid2 mt">
+          <div><div class="label">Location preference</div><div class="field"><span class="ph">e.g. Delhi NCR, Bengaluru, Remote</span></div></div>
+          <div><div class="label">Business model</div><span class="chip">B2B</span><span class="chip">B2C</span><span class="chip">Marketplace</span><span class="chip">Any</span></div>
+        </div>
+        <hr class="divider">
+        <div class="flexb"><span class="btn ghost">Skip for now</span><span class="btn solid">Save &amp; build my feed →</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>KYC is a hard gate: unverified investors get no feed and no request ability (Security module).</li>
+      <li>Preference fields map exactly to the feed ranking inputs in section 6 of the synopsis: industry, stage, range, location, business model.</li>
+      <li>Preferences stay editable later from Profile &amp; Settings; changing them re-ranks the feed.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 09 FEED ============ -->
+<section class="screen" id="feed">
+  <div class="screen-head">
+    <h2>09 · Personalized Investor Feed</h2>
+    <p>Ranked list of startup ideas matching the investor's preferences. Cards show only the limited public teaser — never the full idea.</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/feed</span></div>
+    <div class="viewport">
+      <div class="app-top">
+        <div class="wf-logo" style="font-size:14px;">VENTORA</div>
+        <div class="flexs">
+          <span class="token"><i></i> 8 tokens left</span>
+          <span class="box" style="width:26px;height:26px;padding:0;">🔔</span>
+          <span class="avatar">VK</span>
+        </div>
+      </div>
+      <div class="app-shell">
+        <div class="app-side">
+          <div class="navitem on">My Feed</div>
+          <div class="navitem">Saved ideas</div>
+          <div class="navitem">My requests</div>
+          <div class="navitem">Messages</div>
+          <div class="navitem">Tokens</div>
+          <div class="navitem">Preferences</div>
+        </div>
+        <div class="app-main">
+          <div class="flexb mb">
+            <div><b style="font-size:17px;">Your matched feed</b><div style="font-size:12px;color:#777;">Ranked by your preferences: AgriTech · FinTech · Idea–MVP · ₹5–25L</div></div>
+            <span class="btn sm">⚙ Edit preferences</span>
+          </div>
+          <div class="flexs mb" style="flex-wrap:wrap;">
+            <span class="chip on">Best match</span><span class="chip">Newest</span><span class="chip">Highest AI score</span>
+            <span style="flex:1;"></span>
+            <span class="chip">Industry ▾</span><span class="chip">Stage ▾</span><span class="chip">Range ▾</span>
+          </div>
+          <div class="grid2">
+            <div class="card">
+              <div class="flexb"><span class="tag">AgriTech</span><span class="tag" style="background:#333;color:#fff;">AI score 86</span></div>
+              <b style="font-size:15px;display:block;margin:10px 0 4px;">AgriDrone Analytics</b>
+              <div style="font-size:12px;color:#666;">Drone-based crop health analytics for smallholder farms.</div>
+              <div class="line w80"></div>
+              <div class="flexs mt" style="font-size:11px;color:#777;"><span>Stage: MVP</span>·<span>Seeking: ₹15L</span>·<span>Match: 94%</span></div>
+              <hr class="divider">
+              <div class="flexb"><span class="btn sm ghost">♡ Save</span><span class="btn sm solid">View idea →</span></div>
+            </div>
+            <div class="card">
+              <div class="flexb"><span class="tag">FinTech</span><span class="tag" style="background:#333;color:#fff;">AI score 79</span></div>
+              <b style="font-size:15px;display:block;margin:10px 0 4px;">SplitWise Lite</b>
+              <div style="font-size:12px;color:#666;">Micro-savings rounds for gig workers.</div>
+              <div class="line w80"></div>
+              <div class="flexs mt" style="font-size:11px;color:#777;"><span>Stage: Idea</span>·<span>Seeking: ₹10L</span>·<span>Match: 88%</span></div>
+              <hr class="divider">
+              <div class="flexb"><span class="btn sm ghost">♡ Save</span><span class="btn sm solid">View idea →</span></div>
+            </div>
+            <div class="card">
+              <div class="flexb"><span class="tag">AgriTech</span><span class="tag" style="background:#333;color:#fff;">AI score 72</span></div>
+              <b style="font-size:15px;display:block;margin:10px 0 4px;">SoilSense</b>
+              <div style="font-size:12px;color:#666;">Low-cost IoT soil probes with SMS advisories.</div>
+              <div class="line w80"></div>
+              <div class="flexs mt" style="font-size:11px;color:#777;"><span>Stage: MVP</span>·<span>Seeking: ₹20L</span>·<span>Match: 81%</span></div>
+              <hr class="divider">
+              <div class="flexb"><span class="btn sm ghost">♡ Save</span><span class="btn sm solid">View idea →</span></div>
+            </div>
+            <div class="card" style="opacity:.7;">
+              <div class="flexb"><span class="tag">HealthTech</span><span class="tag" style="background:#333;color:#fff;">AI score 68</span></div>
+              <b style="font-size:15px;display:block;margin:10px 0 4px;">MediQueue</b>
+              <div style="font-size:12px;color:#666;">OPD queue management for clinics.</div>
+              <div class="line w80"></div>
+              <div class="flexs mt" style="font-size:11px;color:#777;"><span>Stage: Idea</span>·<span>Seeking: ₹8L</span>·<span>Match: 62%</span></div>
+              <hr class="divider">
+              <div class="flexb"><span class="btn sm ghost">♡ Save</span><span class="btn sm solid">View idea →</span></div>
+            </div>
+          </div>
+          <div class="banner mt"><span class="ic">🛡</span> Cards show only the public teaser (title, problem, high-level solution, industry, stage, funding need, AI score). Full details unlock after the innovator accepts your request.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>Feed ranking = preference match % + AI completeness score, per the matching engine in the architecture.</li>
+      <li>Token balance is always visible — scarcity is the anti-spam mechanism.</li>
+      <li>Public teaser fields are exactly the whitelist from section 7 (Controlled Idea Disclosure).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 10 IDEA PREVIEW ============ -->
+<section class="screen" id="idea-preview">
+  <div class="screen-head">
+    <h2>10 · Idea Preview (Limited View)</h2>
+    <p>What an investor sees before spending a token. Locked sections tease what exists without revealing it — the core of controlled disclosure.</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/ideas/agridrone</span></div>
+    <div class="viewport pad" style="max-width:860px;margin:0 auto;">
+      <div class="flexb">
+        <div><span class="tag">AgriTech</span> <span class="tag">MVP stage</span> <span class="tag" style="background:#333;color:#fff;">AI score 86</span>
+        <h3 style="font-size:22px;margin-top:8px;">AgriDrone Analytics</h3></div>
+        <span class="btn sm ghost">♡ Save</span>
+      </div>
+      <div class="row mt">
+        <div class="col" style="flex:1.6;">
+          <div class="label">The problem (public)</div>
+          <div class="line"></div><div class="line"></div><div class="line w60"></div>
+          <div class="label mt">High-level solution (public)</div>
+          <div class="line"></div><div class="line w80"></div>
+          <div class="label mt">Locked sections</div>
+          <div class="card mb flexb" style="background:#fafafa;"><span style="font-size:12.5px;">🔒 Business model &amp; revenue details</span><span class="lock">LOCKED</span></div>
+          <div class="card mb flexb" style="background:#fafafa;"><span style="font-size:12.5px;">🔒 Pitch deck (PDF, 14 slides)</span><span class="lock">LOCKED</span></div>
+          <div class="card mb flexb" style="background:#fafafa;"><span style="font-size:12.5px;">🔒 Financial summary &amp; projections</span><span class="lock">LOCKED</span></div>
+          <div class="card flexb" style="background:#fafafa;"><span style="font-size:12.5px;">🔒 Founder contact &amp; team details</span><span class="lock">LOCKED</span></div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <div class="label">Funding requirement</div>
+            <div style="font-size:22px;font-weight:800;">₹15,00,000</div>
+            <div style="font-size:11px;color:#777;">for 12-month runway (public)</div>
+            <hr class="divider">
+            <div class="label">Innovator</div>
+            <div class="flexs"><span class="avatar">R</span><div style="font-size:12px;">Innovator #I-3108<br><span style="color:#777;">Member since 2025 · 2 published ideas</span></div></div>
+            <hr class="divider">
+            <span class="btn solid" style="display:block;">Use 1 token — send connection request</span>
+            <p style="font-size:10.5px;color:#777;margin-top:8px;">You have 8 tokens. Token is refunded if the innovator declines within 14 days (admin-configurable).</p>
+          </div>
+          <div class="banner mt"><span class="ic">🛡</span> Full details unlock only if the innovator accepts your request.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>Innovator identity is pseudonymized until acceptance — protects both sides from unsolicited contact.</li>
+      <li>Locked rows prove value exists (deck, financials) without exposing content — reduces idea-theft risk.</li>
+      <li>Token cost + refund policy copy sets expectations before the spend (token rules admin-configurable).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 11 CHAT ============ -->
+<section class="screen" id="chat">
+  <div class="screen-head">
+    <h2>11 · Chat (Post-Acceptance)</h2>
+    <p>Real-time messaging via Socket.IO, unlocked only after the innovator accepts. Both parties can share files within granted permissions.</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/messages</span></div>
+    <div class="viewport">
+      <div class="app-top"><div class="wf-logo" style="font-size:14px;">VENTORA</div><div class="flexs"><span class="box" style="width:26px;height:26px;padding:0;">🔔</span><span class="avatar">RS</span></div></div>
+      <div class="chat-wrap">
+        <div class="chat-list">
+          <div class="pad" style="padding:12px;"><div class="field" style="margin:0;"><span class="ph">Search conversations</span></div></div>
+          <div class="chat-item on"><span class="avatar">VK</span><div style="font-size:12px;"><b>Investor #A-2417</b><div style="color:#777;">AgriDrone Analytics · Online ●</div></div></div>
+          <div class="chat-item"><span class="avatar">SP</span><div style="font-size:12px;"><b>Investor #B-0932</b><div style="color:#777;">CampusKart · 2h ago</div></div></div>
+        </div>
+        <div class="chat-main">
+          <div class="flexb" style="padding:12px 18px;border-bottom:1.5px solid var(--line);">
+            <div class="flexs"><span class="avatar">VK</span><div style="font-size:13px;"><b>Investor #A-2417</b> <span class="tag">✓ KYC</span><div style="font-size:11px;color:#777;">Re: AgriDrone Analytics · Connected 2 days ago</div></div></div>
+            <div class="flexs"><span class="btn sm ghost">Shared files (2)</span><span class="btn sm ghost">⋯</span></div>
+          </div>
+          <div class="chat-body">
+            <div class="center" style="font-size:10.5px;color:#999;margin-bottom:14px;">— Connection accepted · chat unlocked —</div>
+            <div class="bubble them">Thanks for accepting! Could you share the pitch deck and pilot metrics?</div>
+            <div class="bubble me">Sure — sharing the deck now. Financials stay locked until we sign an NDA.</div>
+            <div class="bubble me flexs" style="background:#fff;"><span class="box" style="width:30px;height:36px;padding:0;font-size:9px;">PDF</span><span>PitchDeck_v3.pdf · 2.4 MB · <u>Download</u></span></div>
+            <div class="bubble them">Received. Let's schedule a call this week — we can take next steps offline.</div>
+          </div>
+          <div class="chat-input">
+            <span class="box" style="width:34px;height:34px;padding:0;">📎</span>
+            <div class="field" style="flex:1;margin:0;"><span class="ph">Type a message…</span></div>
+            <span class="btn solid sm">Send</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>Chat exists only for accepted connections — no cold DMs, which is the spam control working end-to-end.</li>
+      <li>File sharing respects per-document permissions; the ⋯ menu exposes Report / Block (moderation module).</li>
+      <li>"Take next steps offline" copy nudges toward the platform's stated boundary: deals close outside Ventora.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 12 ADMIN ============ -->
+<section class="screen" id="admin">
+  <div class="screen-head">
+    <h2>12 · Admin Dashboard</h2>
+    <p>Platform operations: KYC review queue, token rule configuration, reported-content moderation, and high-level metrics.</p>
+  </div>
+  <div class="browser">
+    <div class="browser-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="url">ventora.io/admin</span></div>
+    <div class="viewport">
+      <div class="app-top"><div class="wf-logo" style="font-size:14px;">VENTORA <span class="tag">ADMIN</span></div><div class="flexs"><span class="avatar">AD</span></div></div>
+      <div class="app-shell">
+        <div class="app-side">
+          <div class="navitem on">Overview</div>
+          <div class="navitem">KYC queue <span class="tag">5</span></div>
+          <div class="navitem">Reports <span class="tag">2</span></div>
+          <div class="navitem">Users</div>
+          <div class="navitem">Ideas</div>
+          <div class="navitem">Token rules</div>
+        </div>
+        <div class="app-main">
+          <div class="grid4 mb">
+            <div class="stat"><div class="num">1,240</div><div class="cap">Users</div></div>
+            <div class="stat"><div class="num">312</div><div class="cap">Ideas live</div></div>
+            <div class="stat"><div class="num">96</div><div class="cap">Connections</div></div>
+            <div class="stat"><div class="num">5</div><div class="cap">KYC pending</div></div>
+          </div>
+          <div class="row">
+            <div class="col" style="flex:1.5;">
+              <div class="label">KYC verification queue</div>
+              <table class="wf">
+                <tr><th>Applicant</th><th>Type</th><th>Submitted</th><th></th></tr>
+                <tr><td>Investor #A-2440</td><td>Angel</td><td>2h ago</td><td><u>Review</u></td></tr>
+                <tr><td>Investor #B-0941</td><td>Seed fund</td><td>5h ago</td><td><u>Review</u></td></tr>
+                <tr><td>Investor #C-1177</td><td>Corporate</td><td>1d ago</td><td><u>Review</u></td></tr>
+              </table>
+              <div class="label mt">Reports &amp; moderation</div>
+              <table class="wf">
+                <tr><th>Report</th><th>Against</th><th>Reason</th><th></th></tr>
+                <tr><td>#R-88</td><td>Investor #B-0901</td><td>Spam requests</td><td><u>Warn / Suspend</u></td></tr>
+                <tr><td>#R-91</td><td>Idea "QuickCash"</td><td>Suspected scam</td><td><u>Unpublish</u></td></tr>
+              </table>
+            </div>
+            <div class="col">
+              <div class="label">Token rules (configurable)</div>
+              <div class="card">
+                <div class="flexb" style="font-size:12.5px;margin-bottom:10px;"><span>Monthly free tokens</span><span class="field" style="width:70px;margin:0;padding:5px 8px;">10</span></div>
+                <div class="flexb" style="font-size:12.5px;margin-bottom:10px;"><span>Cost per request</span><span class="field" style="width:70px;margin:0;padding:5px 8px;">1</span></div>
+                <div class="flexb" style="font-size:12.5px;margin-bottom:10px;"><span>Refund on decline</span><span class="chip on">On</span></div>
+                <div class="flexb" style="font-size:12.5px;"><span>Refund window (days)</span><span class="field" style="width:70px;margin:0;padding:5px 8px;">14</span></div>
+                <span class="btn sm solid mt" style="display:block;">Save rules</span>
+              </div>
+              <div class="box mt" style="height:120px;">Chart: signups &amp; connections over time</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="annot">
+    <b>Annotations</b>
+    <ul>
+      <li>Token economics are admin-configurable, exactly as the synopsis states ("exact token rules can be configured by the platform administrator").</li>
+      <li>KYC queue supports the mock-verification workflow of the academic prototype.</li>
+      <li>Reports feed the reporting/blocking security requirement.</li>
+    </ul>
+  </div>
+</section>
+
+</main>
+
+<script>
+  const links=document.querySelectorAll('.sidebar a');
+  links.forEach(a=>a.addEventListener('click',()=>{
+    links.forEach(x=>x.classList.remove('active'));
+    a.classList.add('active');
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById(a.dataset.s).classList.add('active');
+    window.scrollTo(0,0);
+  }));
+</script>
+</body>
+</html>

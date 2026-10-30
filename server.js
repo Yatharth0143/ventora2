@@ -110,12 +110,6 @@ app.post('/api/messages/:requestId', auth, async (req, res) => {
   res.status(201).json(await Message.create({ request: request.id, sender: req.user.id, text }));
 });
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(here, 'dist')));
-  app.get('*', (_, res) => res.sendFile(path.join(here, 'dist', 'index.html')));
-}
-
 const port = process.env.PORT || 5001;
 
 app.get('/', (req, res) => res.send('Ventora API is running'));

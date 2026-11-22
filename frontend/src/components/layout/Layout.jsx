@@ -7,7 +7,7 @@ export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
+    <div className="min-h-screen bg-slate-50/70 flex flex-col font-['Plus_Jakarta_Sans',sans-serif]">
       <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
       
       <div className="flex-1 flex">
@@ -20,4 +20,3 @@ export default function Layout() {
     </div>
   )
 }
-

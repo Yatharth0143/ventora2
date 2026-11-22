@@ -1,7 +1,4 @@
-from operator import inv
-
 from fastapi import APIRouter, Depends, HTTPException, Query
-from matplotlib.pylab import inv
 from pydantic import BaseModel
 from typing import Optional
 from app.middleware.auth_middleware import get_current_user

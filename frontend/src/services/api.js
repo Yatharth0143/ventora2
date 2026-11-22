@@ -59,6 +59,7 @@ export const cancelSubscription = () => api.post('/payment/cancel')
 export const sendMessage = (data) => api.post('/chat/send', data)
 export const getChatHistory = (userId) => api.get(`/chat/history/${userId}`)
 export const getConversations = () => api.get('/chat/conversations')
+export const getUserProfile = (userId) => api.get(`/chat/user/${userId}`)
 
 // Investors
 export const listInvestors = (params) => api.get('/investors', { params })

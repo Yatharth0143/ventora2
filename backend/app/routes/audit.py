@@ -14,7 +14,9 @@ async def verify_deck_owner(deck_id: str, current_user: dict):
     if not deck:
         raise HTTPException(status_code=404, detail="Deck not found")
 
-    if str(deck.get("founder_id")) != str(current_user["_id"]):
+    is_owner = str(deck.get("founder_id")) == str(current_user.get("_id"))
+    is_screenable = current_user.get("role") in ["investor", "admin"]
+    if not is_owner and not is_screenable:
         raise HTTPException(status_code=403, detail="Access denied")
 
     return deck

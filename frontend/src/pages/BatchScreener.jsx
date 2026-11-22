@@ -55,12 +55,12 @@ export default function BatchScreener() {
       <div>
         <div className="flex items-center gap-2">
           <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
-            USP 14: Investor Toolkit
+            Investor Toolkit
           </span>
         </div>
         <h1 className="text-2xl font-black text-slate-900 mt-2">Batch Red-Flag Screener</h1>
         <p className="text-xs text-slate-500 mt-0.5">
-          Screen 3+ pitch decks simultaneously to extract ranked red flags before dedicating partner reading hours.
+          Screen multiple pitch decks simultaneously to extract ranked red flags before dedicating partner reading hours.
         </p>
       </div>
 

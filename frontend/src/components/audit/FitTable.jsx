@@ -14,7 +14,7 @@ export default function FitTable({ data }) {
     <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
       <div className="p-5 border-b border-slate-200 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <h3 className="font-bold text-sm text-slate-900">No-Percentages Fit Matrix (USP 3)</h3>
+          <h3 className="font-bold text-sm text-slate-900">Deterministic Investment Fit Matrix</h3>
           <p className="text-xs text-slate-500 mt-0.5">
             Every cell is derived from verified semantic fields with explicit page citations — 0% hallucinations.
           </p>

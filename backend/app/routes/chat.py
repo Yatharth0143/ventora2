@@ -33,3 +33,11 @@ async def get_conversations(current_user: dict = Depends(get_current_user)):
     convos = await chat_service.get_conversations(current_user["_id"])
     return {"conversations": convos}
 
+
+@router.get("/user/{user_id}")
+async def get_chat_user(user_id: str, current_user: dict = Depends(get_current_user)):
+    user = await chat_service.get_user_profile(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"user": user}
+

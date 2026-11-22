@@ -162,7 +162,7 @@ export default function AuditViewer() {
               : 'border-transparent text-slate-500 hover:text-slate-800'
           }`}
         >
-          No-Percentages Fit Matrix (USP 3)
+          Investment Fit Matrix
         </button>
         <button
           onClick={() => setActiveTab('text')}

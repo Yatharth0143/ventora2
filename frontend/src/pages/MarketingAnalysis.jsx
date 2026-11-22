@@ -48,7 +48,7 @@ export default function MarketingAnalysis() {
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
-                USP 10: Fundraising-Specific Marketing
+                Fundraising & Distribution Strategy
               </span>
             </div>
             <h1 className="text-2xl font-black text-slate-900 mt-2">{report?.deck_title}</h1>
@@ -75,7 +75,7 @@ export default function MarketingAnalysis() {
 
           <div>
             <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2">
-              Raise Window Posting Cadence (USP 13 Context)
+              Raise Window Strategic Posting Cadence
             </h3>
             <p className="text-xs text-slate-700 bg-indigo-50/60 p-3 rounded-xl border border-indigo-200">
               {report?.posting_cadence_window}

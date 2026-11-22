@@ -8,10 +8,11 @@ import {
   MessageSquare, 
   UserPlus, 
   CreditCard, 
-  FileCheck2,
-  Filter,
-  User,
-  ShieldAlert
+  Filter, 
+  User, 
+  ShieldCheck,
+  ShieldAlert,
+  Sparkles
 } from 'lucide-react'
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -21,7 +22,7 @@ export default function Sidebar({ isOpen, onClose }) {
     { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
     { to: '/upload', label: 'Upload Pitch Deck', icon: UploadCloud },
     { to: '/investors', label: 'Investor Directory', icon: Users },
-    { to: '/chat', label: 'Direct Messages', icon: MessageSquare },
+    { to: '/chat', label: 'Direct Inquiries', icon: MessageSquare },
     { to: '/cofounders', label: 'Co-Founder Discovery', icon: UserPlus },
     { to: '/pricing', label: 'Pro Membership', icon: CreditCard },
     { to: '/profile', label: 'Profile & Trust', icon: User },
@@ -29,7 +30,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
   const investorLinks = [
     { to: '/dashboard', label: 'Investor Desk', icon: LayoutDashboard },
-    { to: '/screener', label: 'Batch Red-Flag Screener', icon: Filter },
+    { to: '/screener', label: 'Batch Screener', icon: Filter },
     { to: '/chat', label: 'Founder Inquiries', icon: MessageSquare },
     { to: '/profile', label: 'Verification & Portfolio', icon: User },
   ]
@@ -42,29 +43,35 @@ export default function Sidebar({ isOpen, onClose }) {
       {isOpen && (
         <div 
           onClick={onClose} 
-          className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-40 md:hidden" 
+          className="fixed inset-0 bg-slate-900/30 backdrop-blur-xs z-40 md:hidden" 
         />
       )}
 
       <aside className={`
-        fixed md:sticky top-16 left-0 z-40 h-[calc(100vh-4rem)] w-64 bg-slate-900 text-slate-300 border-r border-slate-800 flex flex-col justify-between transition-transform duration-200 ease-in-out
+        fixed md:sticky top-16 left-0 z-40 h-[calc(100vh-4rem)] w-64 bg-white text-slate-700 border-r border-slate-200/90 flex flex-col justify-between transition-transform duration-200 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
         <div className="p-4 space-y-6 overflow-y-auto">
-          {/* User Role Card */}
-          <div className="bg-slate-800/60 rounded-xl p-3 border border-slate-700/60">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Current Role</p>
+          {/* User Status Card */}
+          <div className="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Account Type</p>
             <div className="flex items-center justify-between mt-1">
-              <span className="text-sm font-bold text-white capitalize">{user?.role}</span>
+              <span className="text-sm font-bold text-slate-900 capitalize flex items-center gap-1.5">
+                {user?.role}
+                {user?.verified && <ShieldCheck className="w-4 h-4 text-emerald-600" />}
+              </span>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                user?.tier === 'pro' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-slate-700 text-slate-300'
+                user?.tier === 'pro'
+                  ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                  : 'bg-slate-200/70 text-slate-600'
               }`}>
-                {user?.tier?.toUpperCase()}
+                {user?.tier?.toUpperCase() || 'FREE'}
               </span>
             </div>
+
             {isInvestor && !user?.verified && (
-              <div className="mt-2 text-[11px] text-amber-400 flex items-center gap-1">
-                <ShieldAlert className="w-3.5 h-3.5" />
+              <div className="mt-2 text-[11px] text-amber-700 bg-amber-50 p-2 rounded-xl border border-amber-200 flex items-center gap-1.5">
+                <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-amber-600" />
                 <span>Verification pending</span>
               </div>
             )}
@@ -72,7 +79,9 @@ export default function Sidebar({ isOpen, onClose }) {
 
           {/* Navigation Links */}
           <nav className="space-y-1">
-            <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">Navigation</p>
+            <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+              Workspace
+            </p>
             {links.map((item) => {
               const Icon = item.icon
               return (
@@ -81,10 +90,10 @@ export default function Sidebar({ isOpen, onClose }) {
                   to={item.to}
                   onClick={() => onClose && onClose()}
                   className={({ isActive }) => `
-                    flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-colors
+                    flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all
                     ${isActive 
-                      ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/20' 
-                      : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                      ? 'bg-indigo-50 text-indigo-700 font-bold' 
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                     }
                   `}
                 >
@@ -97,12 +106,14 @@ export default function Sidebar({ isOpen, onClose }) {
         </div>
 
         {/* Footer info */}
-        <div className="p-4 border-t border-slate-800 text-[11px] text-slate-500">
-          <p className="font-semibold text-slate-400">Ventora Protocol v1.0</p>
-          <p className="font-mono text-[10px] mt-0.5">Hash-Chain Verified</p>
+        <div className="p-4 border-t border-slate-100 text-[11px] text-slate-500 bg-slate-50/50">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span className="font-bold text-slate-700">Ventora Protocol</span>
+          </div>
+          <p className="font-mono text-[10px] text-slate-400 mt-0.5">SHA-256 Hash Chain</p>
         </div>
       </aside>
     </>
   )
 }
-

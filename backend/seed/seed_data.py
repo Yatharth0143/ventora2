@@ -1,7 +1,6 @@
 import asyncio
 import os
-import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 
 # Load env from root
@@ -26,11 +25,6 @@ async def seed():
     db = mongo_client[MONGODB_DB_NAME]
 
     print("🌱 Connecting to Neo4j...")
-    neo4j_driver = AsyncGraphDatabase.driver(
-        NEO4J_URI,
-        auth=(NEO4J_USERNAME, NEO4J_PASSWORD)
-    )
-
     print("🧹 Cleaning previous seed data...")
     await db.users.delete_many({"email": {"$regex": "@example.com$"}})
     await db.decks.delete_many({"title": {"$regex": "^(Ventora|FinFlow|HealthPulse|AgriScale)"}})
@@ -47,7 +41,7 @@ async def seed():
             "stage": "Seed",
             "skills": ["Payments", "UPI", "Product Strategy", "Go-to-market"],
             "google_id": "demo_priya",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         {
             "name": "Arjun Patel",
@@ -59,7 +53,44 @@ async def seed():
             "stage": "Pre-Seed",
             "skills": ["Machine Learning", "Health Data", "FastAPI"],
             "google_id": "demo_arjun",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
+        },
+        # Co-Founders for graph discovery and matching
+        {
+            "name": "Rohan Deshmukh",
+            "email": "rohan@example.com",
+            "role": "founder",
+            "tier": "free",
+            "verified": True,
+            "sector": "Fintech / B2B",
+            "stage": "Seed",
+            "skills": ["Payments", "UPI", "Distributed Systems"],
+            "google_id": "co_1",
+            "created_at": datetime.now(timezone.utc)
+        },
+        {
+            "name": "Meera Iyer",
+            "email": "meera@example.com",
+            "role": "founder",
+            "tier": "free",
+            "verified": True,
+            "sector": "Fintech / AI",
+            "stage": "Pre-seed",
+            "skills": ["UPI", "Product Strategy"],
+            "google_id": "co_2",
+            "created_at": datetime.now(timezone.utc)
+        },
+        {
+            "name": "Kabir Sen",
+            "email": "kabir@example.com",
+            "role": "founder",
+            "tier": "free",
+            "verified": True,
+            "sector": "Fintech",
+            "stage": "Seed",
+            "skills": ["Payments", "UPI"],
+            "google_id": "co_3",
+            "created_at": datetime.now(timezone.utc)
         },
         # Verified Investor with planted conflict
         {
@@ -74,7 +105,7 @@ async def seed():
             "stage": "Seed, Series A",
             "skills": ["Fintech", "Due Diligence", "Capital Allocation"],
             "google_id": "demo_vikram",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         # Unverified Investor (shows "Not yet verified")
         {
@@ -89,7 +120,7 @@ async def seed():
             "stage": "Pre-Seed",
             "skills": ["Brand", "D2C"],
             "google_id": "demo_ananya",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         # 18 more realistic investors
         {
@@ -104,7 +135,7 @@ async def seed():
             "stage": "Seed",
             "skills": ["Enterprise SaaS", "B2B Sales"],
             "google_id": "demo_sanjay",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         {
             "name": "Ritu Verma",
@@ -118,7 +149,7 @@ async def seed():
             "stage": "Seed",
             "skills": ["Healthcare", "Clinical Trials"],
             "google_id": "demo_ritu",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         {
             "name": "Aditya Singhal",
@@ -132,7 +163,7 @@ async def seed():
             "stage": "Pre-Seed, Seed",
             "skills": ["Mobility", "Warehousing"],
             "google_id": "demo_aditya",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         {
             "name": "Naveen Tewari",
@@ -146,7 +177,7 @@ async def seed():
             "stage": "Seed, Series A",
             "skills": ["Adtech", "Scaling"],
             "google_id": "demo_naveen",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         {
             "name": "Tanmay Bhatia",
@@ -160,7 +191,7 @@ async def seed():
             "stage": "Angel",
             "skills": ["Community", "Growth"],
             "google_id": "demo_tanmay",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         {
             "name": "Deepika Rao",
@@ -174,7 +205,7 @@ async def seed():
             "stage": "Seed, Series A",
             "skills": ["Lending", "Insurtech"],
             "google_id": "demo_deepika",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         {
             "name": "Kunal Bahl",
@@ -188,7 +219,7 @@ async def seed():
             "stage": "Seed",
             "skills": ["Marketplaces", "Founding"],
             "google_id": "demo_kunal",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         {
             "name": "Radhika Ghai",
@@ -202,7 +233,7 @@ async def seed():
             "stage": "Seed",
             "skills": ["D2C", "Branding"],
             "google_id": "demo_radhika",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         # Honest response investor: intentionally no graph portfolio!
         {
@@ -217,7 +248,7 @@ async def seed():
             "stage": "Pre-Seed",
             "skills": ["Agriculture"],
             "google_id": "demo_harsh",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         }
     ]
 
@@ -249,7 +280,7 @@ async def seed():
                 {"title": "बाजार", "page_number": 3, "content": "बाजार का आकार: भारत का एमएसएमई क्रेडिट गैप ₹25 लाख करोड़ ($300B) है।", "quotes": ["बाजार का आकार: भारत का एमएसएमई क्रेडिट गैप ₹25 लाख करोड़ ($300B) है।"]},
                 {"title": "फाइनेंशियल्स", "page_number": 4, "content": "वर्तमान स्थिति: 450 सक्रिय व्यापारी, ₹1.2 करोड़ वार्षिक रन-रेट (ARR)। मांग: ₹3 करोड़ सीड फंडिंग।", "quotes": ["450 सक्रिय व्यापारी, ₹1.2 करोड़ वार्षिक रन-रेट (ARR)।", "मांग (Ask): 18 महीने के रनवे के लिए ₹3 करोड़ ($360K) सीड फंडिंग।"]}
             ],
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         },
         {
             "founder_id": inserted_users["arjun@example.com"],
@@ -268,7 +299,7 @@ Ask: Raising $500,000 for clinical device certification and team expansion.""",
                 {"title": "Market", "page_number": 2, "content": "$4.5B Indian healthcare diagnostics TAM.", "quotes": ["$4.5B Indian healthcare diagnostics TAM growing at 18% CAGR."]},
                 {"title": "Traction", "page_number": 3, "content": "12 hospital pilots deployed, ₹45 Lakhs ARR pipeline.", "quotes": ["12 hospital pilots deployed across Maharashtra and Gujarat.", "₹45 Lakhs ARR contract pipeline."]}
             ],
-            "created_at": datetime.utcnow()
+            "created_at": datetime.now(timezone.utc)
         }
     ]
 
@@ -290,7 +321,7 @@ Ask: Raising $500,000 for clinical device certification and team expansion.""",
                     ],
                     "is_translated": False,
                     "original_text": "बाजार का आकार: भारत का एमएसएमई क्रेडिट गैप ₹25 लाख करोड़ ($300B) है।",
-                    "created_at": datetime.utcnow()
+                    "created_at": datetime.now(timezone.utc)
                 },
                 {
                     "deck_id": d_id,
@@ -303,7 +334,7 @@ Ask: Raising $500,000 for clinical device certification and team expansion.""",
                     ],
                     "is_translated": False,
                     "original_text": "450 सक्रिय व्यापारी, ₹1.2 करोड़ वार्षिक रन-रेट (ARR)।",
-                    "created_at": datetime.utcnow()
+                    "created_at": datetime.now(timezone.utc)
                 },
                 {
                     "deck_id": d_id,
@@ -316,7 +347,7 @@ Ask: Raising $500,000 for clinical device certification and team expansion.""",
                     ],
                     "is_translated": False,
                     "original_text": "व्हाट्सएप आधारित त्वरित इनवॉइस डिस्काउंटिंग और क्रेडिट असेसमेंट।",
-                    "created_at": datetime.utcnow()
+                    "created_at": datetime.now(timezone.utc)
                 },
                 # Locked finding #4 for free tier
                 {
@@ -330,7 +361,7 @@ Ask: Raising $500,000 for clinical device certification and team expansion.""",
                     ],
                     "is_translated": False,
                     "original_text": "",
-                    "created_at": datetime.utcnow()
+                    "created_at": datetime.now(timezone.utc)
                 }
             ]
             await db.findings.insert_many(findings)
@@ -338,7 +369,18 @@ Ask: Raising $500,000 for clinical device certification and team expansion.""",
     print("✅ Seeded Decks & Findings in MongoDB.")
 
     print("🕸️ Seeding Neo4j Graph...")
+    neo4j_driver = None
+    neo4j_seeded = False
     try:
+        neo4j_uri = NEO4J_URI
+        if not neo4j_uri:
+            raise ValueError("NEO4J_URI is not configured")
+        if "neo4j+s://" in neo4j_uri:
+            neo4j_uri = neo4j_uri.replace("neo4j+s://", "neo4j+ssc://")
+        neo4j_driver = AsyncGraphDatabase.driver(
+            neo4j_uri,
+            auth=(NEO4J_USERNAME, NEO4J_PASSWORD)
+        )
         async with neo4j_driver.session() as session:
             # Clear graph
             await session.run("MATCH (n) DETACH DELETE n")
@@ -449,12 +491,20 @@ Ask: Raising $500,000 for clinical device certification and team expansion.""",
             )
 
         print("✅ Seeded Neo4j graph with planted conflict and co-founders.")
+        neo4j_seeded = True
     except Exception as e:
         print(f"⚠️ Neo4j seeding notice: {e}")
+    finally:
+        try:
+            if neo4j_driver is not None:
+                await neo4j_driver.close()
+        finally:
+            mongo_client.close()
 
-    await mongo_client.close()
-    await neo4j_driver.close()
-    print("🎉 ALL SEEDING COMPLETED SUCCESSFULLY!")
+    if neo4j_seeded:
+        print("🎉 ALL SEEDING COMPLETED SUCCESSFULLY!")
+    else:
+        print("⚠️ MongoDB seeding completed, but Neo4j graph seeding did not.")
 
 
 if __name__ == "__main__":

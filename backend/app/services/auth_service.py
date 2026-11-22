@@ -49,7 +49,7 @@ async def get_or_create_user(email: str, name: str, picture: str = "", google_id
             "email": email,
             "name": name,
             "picture": picture,
-            "role": role if role in ["founder", "investor"] else UserRole.FOUNDER.value,
+            "role": role if role in ["founder", "investor", "admin"] else UserRole.FOUNDER.value,
             "tier": AccountTier.FREE.value,
             "verified": False,
             "portfolio_url": "",

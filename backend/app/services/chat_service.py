@@ -32,6 +32,19 @@ async def send_message(sender_id: str, receiver_id: str, text: str, sender: dict
     receiver_role = receiver.get("role", "founder")
     receiver_verified = receiver.get("verified", False)
 
+    # Check for blocked accounts (e.g. unresponsive > 7 days)
+    if sender.get("status") == "blocked" or sender.get("blocked") is True:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your account has been blocked due to unresponsiveness (>7 days). Please contact admin.",
+        )
+
+    if receiver.get("status") == "blocked" or receiver.get("blocked") is True:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="This investor account is currently blocked by administration for unresponsiveness.",
+        )
+
     # Trust Gating Rule 1: Founder must be Pro ONLY to initiate/chat with investors
     if sender_role == "founder" and sender_tier != "pro" and receiver_role == "investor":
         raise HTTPException(

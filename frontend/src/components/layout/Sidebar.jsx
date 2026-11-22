@@ -12,7 +12,8 @@ import {
   User, 
   ShieldCheck,
   ShieldAlert,
-  Sparkles
+  Sparkles,
+  TrendingUp
 } from 'lucide-react'
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -21,17 +22,21 @@ export default function Sidebar({ isOpen, onClose }) {
   const founderLinks = [
     { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
     { to: '/upload', label: 'Upload Pitch Deck', icon: UploadCloud },
+    { to: '/market-analysis', label: 'Market Intelligence', icon: TrendingUp },
     { to: '/investors', label: 'Investor Directory', icon: Users },
     { to: '/chat', label: 'Direct Inquiries', icon: MessageSquare },
     { to: '/cofounders', label: 'Co-Founder Discovery', icon: UserPlus },
+    { to: '/admin', label: 'Admin & Verdicts', icon: ShieldAlert },
     { to: '/pricing', label: 'Pro Membership', icon: CreditCard },
     { to: '/profile', label: 'Profile & Trust', icon: User },
   ]
 
   const investorLinks = [
     { to: '/dashboard', label: 'Investor Desk', icon: LayoutDashboard },
+    { to: '/market-analysis', label: 'Market Intelligence', icon: TrendingUp },
     { to: '/screener', label: 'Batch Screener', icon: Filter },
     { to: '/chat', label: 'Founder Inquiries', icon: MessageSquare },
+    { to: '/admin', label: 'Admin & Verdicts', icon: ShieldAlert },
     { to: '/profile', label: 'Verification & Portfolio', icon: User },
   ]
 

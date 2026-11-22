@@ -1,7 +1,61 @@
 import httpx
 import json
 import re
+import logging
 from app.config import settings
+
+logger = logging.getLogger(__name__)
+
+SARVAM_COMPLETIONS_URL = "https://api.sarvam.ai/v1/chat/completions"
+
+
+async def call_sarvam_chat(
+    messages: list[dict],
+    max_tokens: int = 2048,
+    model: str = "sarvam-105b-conversations",
+    temperature: float = 0.1,
+    timeout: float = 30.0,
+) -> str:
+    """Call Sarvam AI chat completions API with proper headers and error handling."""
+    api_key = settings.SARVAM_API_KEY
+    if not api_key:
+        raise ValueError("SARVAM_API_KEY is not configured")
+
+    url = (
+        f"{settings.SARVAM_API_URL.rstrip('/')}/v1/chat/completions"
+        if "sarvam" in settings.SARVAM_API_URL
+        else SARVAM_COMPLETIONS_URL
+    )
+
+    headers = {
+        "api-subscription-key": api_key,
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+    }
+
+    if model == "sarvam-105b":
+        payload["reasoning_effort"] = "low"
+
+    async with httpx.AsyncClient(timeout=timeout) as client:
+        resp = await client.post(url, json=payload, headers=headers)
+        if resp.status_code != 200:
+            logger.warning(f"Sarvam AI returned HTTP {resp.status_code}: {resp.text}")
+            resp.raise_for_status()
+
+        data = resp.json()
+        choice = data.get("choices", [{}])[0]
+        content = choice.get("message", {}).get("content")
+
+        if not content and choice.get("message", {}).get("reasoning_content"):
+            content = choice.get("message", {}).get("reasoning_content")
+
+        return content or ""
 
 
 async def parse_deck_with_ai(raw_text: str, language: str = "en") -> list[dict]:
@@ -14,15 +68,15 @@ Analyze this pitch deck text and find concrete audit findings.
 Look for:
 1. Internal Contradictions (e.g., TAM claimed as $1B on one page but $500M on another, or B2B focus vs D2C pricing).
 2. Numeric Inconsistencies (revenue, burn rate, valuation, pricing vs ask).
-3. Missing Critical Evidence (unsubstantiated claims).
+3. Missing Critical Evidence (unsubstantiated claims, zero revenue with high valuation).
 4. Strengths.
 
 CRITICAL: Every finding MUST cite EXACT word-for-word quotes from the text and estimated page numbers.
-Return JSON with this schema:
+Respond ONLY with a valid JSON array matching this schema:
 [
   {{
-    "type": "contradiction" | "numeric_inconsistency" | "missing_evidence" | "strength",
-    "severity": "high" | "medium" | "low",
+    "type": "contradiction",
+    "severity": "high",
     "title": "short title",
     "description": "why this was flagged",
     "quotes": [
@@ -32,37 +86,37 @@ Return JSON with this schema:
 ]
 
 Pitch Deck Text:
-{raw_text[:8000]}
+{raw_text[:6000]}
 """
 
-    headers = {
-        "api-subscription-key": settings.SARVAM_API_KEY,
-        "Content-Type": "application/json",
-    }
+    messages = [
+        {"role": "system", "content": "You are a startup deck auditor. Respond strictly in valid JSON without markdown wrapping."},
+        {"role": "user", "content": prompt}
+    ]
 
-    # Use Sarvam's completions / chat / interact endpoint
-    try:
-        url = f"{settings.SARVAM_API_URL}/chat/completions" if "sarvam" in settings.SARVAM_API_URL else "https://api.sarvam.ai/chat/completions"
-        payload = {
-            "model": "sarvam-2b",
-            "messages": [
-                {"role": "system", "content": "You are a startup deck auditor. Respond strictly in valid JSON."},
-                {"role": "user", "content": prompt}
-            ],
-            "temperature": 0.1,
-        }
-        async with httpx.AsyncClient(timeout=20.0) as client:
-            resp = await client.post(url, json=payload, headers=headers)
-            if resp.status_code == 200:
-                data = resp.json()
-                content = data.get("choices", [{}])[0].get("message", {}).get("content", "")
-                # Clean JSON fences if present
-                clean_json = re.sub(r'```json|```', '', content).strip()
+    # Try fast conversations model first, fallback to reasoning model
+    for model_name in ["sarvam-105b-conversations", "sarvam-105b"]:
+        try:
+            content = await call_sarvam_chat(
+                messages=messages,
+                max_tokens=3000,
+                model=model_name,
+                temperature=0.1,
+                timeout=25.0
+            )
+            if content:
+                # Clean fences or markdown
+                clean_json = re.sub(r'```(?:json)?|```', '', content).strip()
+                # Find JSON array
+                array_match = re.search(r'\[[\s\S]*\]', clean_json)
+                if array_match:
+                    clean_json = array_match.group(0)
+
                 findings = json.loads(clean_json)
                 if isinstance(findings, list) and len(findings) > 0:
                     return findings
-    except Exception:
-        pass
+        except Exception as e:
+            logger.warning(f"Sarvam model {model_name} failed: {e}")
 
     return generate_rule_based_findings(raw_text)
 
@@ -122,4 +176,3 @@ def generate_rule_based_findings(raw_text: str) -> list[dict]:
         })
 
     return findings
-

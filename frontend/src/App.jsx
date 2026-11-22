@@ -18,6 +18,8 @@ import CoFounderDiscovery from './pages/CoFounderDiscovery'
 import BatchScreener from './pages/BatchScreener'
 import MarketingAnalysis from './pages/MarketingAnalysis'
 import Profile from './pages/Profile'
+import AdminPage from './pages/AdminPage'
+import MarketAnalysis from './pages/MarketAnalysis'
 
 function App() {
   const { user } = useAuth()
@@ -50,6 +52,9 @@ function App() {
         <Route path="/screener" element={<BatchScreener />} />
         <Route path="/marketing/:deckId" element={<MarketingAnalysis />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/market-analysis" element={<MarketAnalysis />} />
+        <Route path="/market-analysis/:deckId" element={<MarketAnalysis />} />
       </Route>
 
       {/* Fallback */}

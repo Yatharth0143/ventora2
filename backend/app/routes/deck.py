@@ -64,6 +64,15 @@ async def upload_deck(
 
 @router.get("/list")
 async def list_decks(current_user: dict = Depends(get_current_user)):
+    # Investors and admins can view all uploaded decks for analysis and screening
+    if current_user.get("role") in ["investor", "admin"]:
+        cursor = db.get_db().decks.find({"is_garbage_idea": {"$ne": True}}).sort("created_at", -1)
+        decks = []
+        async for doc in cursor:
+            doc["_id"] = str(doc["_id"])
+            decks.append(doc)
+        return {"decks": decks}
+
     decks = await deck_service.list_user_decks(current_user["_id"])
     return {"decks": decks}
 

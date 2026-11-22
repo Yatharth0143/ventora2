@@ -4,7 +4,9 @@ import {
   getDeck, 
   getFindings, 
   getFitTable, 
-  runAudit 
+  runAudit,
+  queryDeckRag,
+  runDeckRagAudit
 } from '../services/api'
 import { useAuth } from '../contexts/AuthContext'
 import FindingCard from '../components/audit/FindingCard'
@@ -30,10 +32,15 @@ export default function AuditViewer() {
   const [deck, setDeck] = useState(null)
   const [findingsData, setFindingsData] = useState({ findings: [], total: 0, gated: false, locked_count: 0 })
   const [fitData, setFitData] = useState(null)
-  const [activeTab, setActiveTab] = useState('findings') // findings, fit, text
+  const [activeTab, setActiveTab] = useState('findings') // findings, fit, text, rag
   const [loading, setLoading] = useState(true)
   const [reAuditing, setReAuditing] = useState(false)
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const [ragQueryText, setRagQueryText] = useState('')
+  const [ragQueryResult, setRagQueryResult] = useState(null)
+  const [ragQuerying, setRagQuerying] = useState(false)
+  const [fullRagReport, setFullRagReport] = useState(null)
+  const [fullRagLoading, setFullRagLoading] = useState(false)
 
   useEffect(() => {
     loadAll()
@@ -174,6 +181,17 @@ export default function AuditViewer() {
         >
           Raw Slide Text & Citations
         </button>
+        <button
+          onClick={() => setActiveTab('rag')}
+          className={`pb-3 border-b-2 transition-colors cursor-pointer flex items-center gap-1.5 ${
+            activeTab === 'rag'
+              ? 'border-indigo-600 text-indigo-600'
+              : 'border-transparent text-slate-500 hover:text-slate-800'
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          RAG Audit Pipeline (Sarvam AI)
+        </button>
       </div>
 
       {/* Tab Content */}
@@ -221,6 +239,172 @@ export default function AuditViewer() {
           <pre className="p-4 bg-slate-900 text-slate-100 rounded-xl text-xs font-mono whitespace-pre-wrap leading-relaxed overflow-x-auto max-h-96">
             {deck?.raw_text || 'No text extracted'}
           </pre>
+        </div>
+      )}
+
+      {activeTab === 'rag' && (
+        <div className="space-y-6">
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">
+                  Retrieval-Augmented Verification
+                </span>
+                <h3 className="text-base font-black text-slate-900 mt-1">
+                  Minimal RAG Audit Suite for this Deck
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Slide-level BM25 indexing + Sarvam AI grounded audit synthesis with word-for-word citations.
+                </p>
+              </div>
+
+              <button
+                onClick={async () => {
+                  setFullRagLoading(true)
+                  try {
+                    const res = await runDeckRagAudit(deckId)
+                    setFullRagReport(res.data.rag_audit)
+                    toast.success('4-Pillar RAG Audit completed!')
+                  } catch (err) {
+                    toast.error('RAG audit error')
+                  } finally {
+                    setFullRagLoading(false)
+                  }
+                }}
+                disabled={fullRagLoading}
+                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer self-start sm:self-auto disabled:opacity-50 shadow-xs"
+              >
+                {fullRagLoading ? (
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Sparkles className="w-3.5 h-3.5" />
+                )}
+                {fullRagLoading ? 'Auditing with Sarvam...' : 'Run Full 4-Pillar RAG Audit'}
+              </button>
+            </div>
+
+            {/* Custom RAG Query Input */}
+            <div className="pt-2 border-t border-slate-100 space-y-2">
+              <label className="block text-xs font-bold text-slate-700">
+                Ask a Grounded Audit Question:
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={ragQueryText}
+                  onChange={(e) => setRagQueryText(e.target.value)}
+                  placeholder="e.g. Check TAM claims, verify burn rate vs runway, or confirm IP defensibility..."
+                  className="flex-1 px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
+                  onKeyDown={async (e) => {
+                    if (e.key === 'Enter' && ragQueryText.trim()) {
+                      setRagQuerying(true)
+                      try {
+                        const res = await queryDeckRag(deckId, ragQueryText.trim())
+                        setRagQueryResult(res.data.rag_result)
+                      } catch (err) {
+                        toast.error('Query error')
+                      } finally {
+                        setRagQuerying(false)
+                      }
+                    }
+                  }}
+                />
+                <button
+                  onClick={async () => {
+                    if (!ragQueryText.trim()) return
+                    setRagQuerying(true)
+                    try {
+                      const res = await queryDeckRag(deckId, ragQueryText.trim())
+                      setRagQueryResult(res.data.rag_result)
+                      toast.success('RAG analysis complete')
+                    } catch (err) {
+                      toast.error('Query error')
+                    } finally {
+                      setRagQuerying(false)
+                    }
+                  }}
+                  disabled={ragQuerying || !ragQueryText.trim()}
+                  className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {ragQuerying ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <ArrowRight className="w-3.5 h-3.5" />}
+                  Ask
+                </button>
+              </div>
+            </div>
+
+            {/* Single Query Result */}
+            {ragQueryResult && (
+              <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-xs text-slate-800">Query: "{ragQueryResult.query}"</span>
+                  <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                    ragQueryResult.verdict === 'RED_FLAG'
+                      ? 'bg-rose-100 text-rose-800 border border-rose-200'
+                      : ragQueryResult.verdict === 'VERIFIED'
+                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                      : 'bg-amber-100 text-amber-800 border border-amber-200'
+                  }`}>
+                    {ragQueryResult.verdict}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-700 leading-relaxed">{ragQueryResult.answer}</p>
+                {ragQueryResult.citations?.length > 0 && (
+                  <div className="space-y-1.5 pt-1">
+                    <p className="text-[10px] uppercase font-bold text-slate-400">Grounded Citations:</p>
+                    {ragQueryResult.citations.map((c, i) => (
+                      <div key={i} className="text-xs font-mono bg-white p-2 rounded-lg border border-slate-200 text-slate-800">
+                        <span className="font-bold text-indigo-600">Slide {c.page_number}:</span> "{c.text}"
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Full 4-Pillar RAG Report */}
+          {fullRagReport && (
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-sm font-black text-slate-900">4-Pillar RAG Audit Verdict</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">{fullRagReport.verdict_reason}</p>
+                </div>
+                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                  fullRagReport.overall_verdict === 'GARBAGE_IDEA'
+                    ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                    : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                }`}>
+                  {fullRagReport.overall_verdict === 'GARBAGE_IDEA' ? 'Garbage Idea (Red Flagged)' : 'Investable / Approved'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                {fullRagReport.reports?.map((rep, idx) => (
+                  <div key={idx} className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-xs text-slate-800">{rep.dimension}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                        rep.verdict === 'RED_FLAG'
+                          ? 'bg-rose-100 text-rose-700'
+                          : rep.verdict === 'VERIFIED'
+                          ? 'bg-emerald-100 text-emerald-700'
+                          : 'bg-amber-100 text-amber-700'
+                      }`}>
+                        {rep.verdict}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-600 leading-relaxed">{rep.answer}</p>
+                    {rep.citations?.length > 0 && (
+                      <div className="text-[11px] font-mono bg-white p-2 rounded border border-slate-200 text-slate-700">
+                        <span className="font-bold text-indigo-600">Slide {rep.citations[0].page_number}:</span> "{rep.citations[0].text}"
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 

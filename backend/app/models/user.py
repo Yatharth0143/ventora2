@@ -7,6 +7,7 @@ from enum import Enum
 class UserRole(str, Enum):
     FOUNDER = "founder"
     INVESTOR = "investor"
+    ADMIN = "admin"
 
 
 class AccountTier(str, Enum):

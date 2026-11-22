@@ -81,3 +81,30 @@ export const verifyEntry = (entryId) => api.get(`/verify/entry/${entryId}`)
 // Marketing
 export const getMarketingReport = (deckId) => api.get(`/marketing/${deckId}`)
 
+// RAG Audit Pipeline
+export const queryDeckRag = (deckId, query) => api.post(`/audit/${deckId}/rag-query`, { query })
+export const runDeckRagAudit = (deckId) => api.post(`/audit/${deckId}/rag-audit`)
+
+// Admin - Pitch Deck Verdicts & 7-Day Retention
+export const getAdminStats = () => api.get('/admin/stats')
+export const getAdminDecks = () => api.get('/admin/decks')
+export const removeGarbageDeck = (deckId) => api.delete(`/admin/decks/${deckId}`)
+export const purgeAllGarbageDecks = () => api.post('/admin/decks/purge-garbage')
+export const purgeExpiredDecks = () => api.post('/admin/decks/purge-expired')
+export const flagDeckGarbage = (deckId, data) => api.post(`/admin/decks/${deckId}/flag-garbage`, data)
+export const runAdminRagAudit = (deckId) => api.post(`/admin/decks/${deckId}/run-rag-audit`)
+
+// Admin - Investor Responsiveness, 7-Day Warnings & Blocks
+export const getAdminInvestors = () => api.get('/admin/investors')
+export const warnInvestor = (investorId, reason) => api.post(`/admin/investors/${investorId}/warn`, { reason })
+export const blockInvestor = (investorId, reason) => api.post(`/admin/investors/${investorId}/block`, { reason })
+export const unblockInvestor = (investorId) => api.post(`/admin/investors/${investorId}/unblock`)
+
+// Market Intelligence & Analysis (For Founders & Investors)
+export const runMarketAnalysis = (deckId) => api.post(`/market-analysis/${deckId}/run`)
+export const getMarketAnalysis = (deckId) => api.get(`/market-analysis/${deckId}`)
+export const analyzeCustomMarket = (data) => api.post('/market-analysis/custom/analyze', data)
+export const getRecentMarketAnalyses = () => api.get('/market-analysis')
+
+
+

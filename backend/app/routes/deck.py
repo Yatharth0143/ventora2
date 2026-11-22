@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
 from app.middleware.auth_middleware import get_current_user
 from app.services import deck_service, cloudinary_service, hash_chain_service
-
+from bson import ObjectId
+from app.database import db
 router = APIRouter(prefix="/api/deck", tags=["deck"])
 
 
@@ -72,7 +73,8 @@ async def get_deck_detail(deck_id: str, current_user: dict = Depends(get_current
     deck = await deck_service.get_deck(deck_id)
     if not deck:
         raise HTTPException(status_code=404, detail="Deck not found")
-
+    if str(deck.get("founder_id")) != str(current_user["_id"]):
+        raise HTTPException(status_code=403, detail="Access denied")
     # Log view to hash chain
     await hash_chain_service.append_event(
         event_type="deck_view",

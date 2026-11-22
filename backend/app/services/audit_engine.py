@@ -129,46 +129,71 @@ async def get_findings(deck_id: str, user_tier: str = "free") -> dict:
     }
 
 
-async def compute_fit_table(deck_id: str) -> dict:
-    """USP 3: Deterministic no-percentages fit table derived strictly from parsed text."""
-    deck = await db.get_db().decks.find_one({"_id": ObjectId(deck_id)})
-    raw_text = (deck.get("raw_text", "") if deck else "").lower()
 
-    # Derived values with source references
-    cells = [
+async def compute_fit_table(deck_id: str) -> dict:
+    """Build evidence-based fit indicators from actual parsed deck text."""
+
+    if not ObjectId.is_valid(deck_id):
+        raise ValueError("Invalid deck ID")
+
+    deck = await db.get_db().decks.find_one({"_id": ObjectId(deck_id)})
+
+    if not deck:
+        raise ValueError("Deck not found")
+
+    raw_text = deck.get("raw_text", "")
+    text = raw_text.lower()
+
+    sections = deck.get("sections", [])
+
+    def find_evidence(keywords):
+        for section in sections:
+            content = section.get("content", "")
+            if any(word in content.lower() for word in keywords):
+                return {
+                    "source_field": section.get("title", "Deck text"),
+                    "source_page": section.get("page_number"),
+                }
+        return None
+
+    checks = [
         {
             "category": "Sector Fit",
-            "value": "Fintech & Payments" if "payment" in raw_text or "fintech" in raw_text else "Enterprise B2B Software",
-            "source_field": "Problem / Solution Section",
-            "source_page": 2,
-            "status": "Verified"
+            "keywords": ["fintech", "payment", "banking", "finance", "consumer", "enterprise", "b2b"],
+            "value": "Sector-related evidence found",
         },
         {
             "category": "Stage Alignment",
-            "value": "Seed (Pre-revenue to Early Traction)" if "seed" in raw_text else "Pre-Seed / Prototype",
-            "source_field": "Fundraising Ask Slide",
-            "source_page": 6,
-            "status": "Verified"
+            "keywords": ["pre-seed", "pre seed", "seed", "series a", "prototype", "early stage"],
+            "value": "Funding stage evidence found",
         },
         {
             "category": "Capital Efficiency",
-            "value": "18-Month Runway Target",
-            "source_field": "Financial Plan Slide",
-            "source_page": 7,
-            "status": "Verified"
+            "keywords": ["runway", "burn rate", "monthly burn", "cash flow", "capital efficiency"],
+            "value": "Financial evidence found",
         },
         {
             "category": "Traction Verification",
-            "value": "Early Pilot Customers Identified",
-            "source_field": "Traction / Milestone Slide",
-            "source_page": 4,
-            "status": "Verified"
-        }
+            "keywords": ["customers", "revenue", "users", "pilot", "traction", "mrr", "arr"],
+            "value": "Traction evidence found",
+        },
     ]
+
+    cells = []
+
+    for check in checks:
+        evidence = find_evidence(check["keywords"])
+
+        cells.append({
+            "category": check["category"],
+            "value": check["value"] if evidence else "Not found in deck",
+            "source_field": evidence["source_field"] if evidence else None,
+            "source_page": evidence["source_page"] if evidence else None,
+            "status": "Evidence found" if evidence else "Needs evidence",
+        })
 
     return {
         "deck_id": str(deck_id),
         "fit_table": cells,
-        "formula": "Derived deterministically from parsed semantic tokens — 0% model hallucinations."
+        "formula": "Indicators are based on keyword evidence in parsed deck text; they do not independently verify claims."
     }
-

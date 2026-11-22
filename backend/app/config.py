@@ -44,7 +44,7 @@ class Settings(BaseSettings):
     APP_PORT: int = 8000
 
     model_config = ConfigDict(
-        env_file=["../.env", ".env"],
+        env_file=["../../.env", "../.env", ".env"],
         extra="ignore",
     )
 

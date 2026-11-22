@@ -100,13 +100,15 @@ class MockCollection:
         return AsyncCursor(matches)
 
     async def update_one(self, filter, update):
-        target = await self.find_one(filter)
-        if target:
-            if "$set" in update:
-                for k, v in update["$set"].items():
-                    target[k] = v
-        return target
-
+        for target in self.docs:
+            if all(
+                str(target.get(key)) == str(value)
+                for key, value in filter.items()
+            ):
+                for key, value in update.get("$set", {}).items():
+                    target[key] = value
+                return target
+        return None
     async def update_many(self, filter, update):
         pass
 

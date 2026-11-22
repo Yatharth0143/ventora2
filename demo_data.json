@@ -1,0 +1,54 @@
+{
+  "accounts": {
+    "innovators": [
+      {
+        "name": "Priya Sharma (Innovator)",
+        "email": "innovator@ventora.in",
+        "password": "Password@123",
+        "role": "innovator",
+        "verified": true,
+        "preferences": ["software", "ai", "fintech"],
+        "deck_title": "FinFlow — SME Payment Automation (Hindi & English)"
+      },
+      {
+        "name": "Priya Sharma",
+        "email": "priya@example.com",
+        "password": "Password@123",
+        "role": "innovator",
+        "verified": true,
+        "preferences": ["software", "fintech"],
+        "deck_title": "FinFlow Seed Pitch Deck"
+      }
+    ],
+    "investors": [
+      {
+        "name": "Vikram Mehta (Investor)",
+        "email": "investor@ventora.in",
+        "password": "Password@123",
+        "role": "investor",
+        "verified": true,
+        "investor_type": "Angel / Seed VC",
+        "range": "₹50L - ₹2Cr",
+        "preferences": ["software", "ai", "hardware", "fintech"],
+        "industries": ["Software", "AI", "FinTech", "Hardware"]
+      },
+      {
+        "name": "Vikram Mehta",
+        "email": "vikram@example.com",
+        "password": "Password@123",
+        "role": "investor",
+        "verified": true,
+        "investor_type": "Institutional VC",
+        "range": "₹1Cr - ₹5Cr",
+        "preferences": ["software", "ai", "fintech"],
+        "industries": ["FinTech", "AI"]
+      }
+    ]
+  },
+  "endpoints": {
+    "login_url": "/api/login",
+    "demo_login_url": "/api/auth/demo-login",
+    "feed_url": "/api/feed",
+    "market_analysis_url": "/api/market-analysis"
+  }
+}

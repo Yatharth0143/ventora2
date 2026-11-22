@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "ventora-dev-secret"
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRY_HOURS: int = 24
+    ADMIN_EMAILS: str = "admin@ventora.in"
 
     # CORS
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"

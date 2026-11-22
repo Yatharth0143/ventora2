@@ -1,4 +1,3 @@
-import pytest
 from app.services.quote_validator import find_quote_in_text, validate_finding
 from app.services.numeric_checker import normalize_value, check_numeric_claim
 from app.services.injection_guard import sanitize_text, is_safe_finding

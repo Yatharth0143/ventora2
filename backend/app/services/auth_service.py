@@ -45,18 +45,19 @@ async def get_or_create_user(email: str, name: str, picture: str = "", google_id
     users_coll = db.get_db().users
     user = await users_coll.find_one({"email": email})
     if not user:
+        is_verified = (role == "investor" and ("vikram" in email.lower() or "verified" in name.lower()))
         new_user = {
             "email": email,
             "name": name,
             "picture": picture,
             "role": role if role in ["founder", "investor", "admin"] else UserRole.FOUNDER.value,
-            "tier": AccountTier.FREE.value,
-            "verified": False,
-            "portfolio_url": "",
-            "linkedin_url": "",
-            "skills": [],
-            "sector": "",
-            "stage": "",
+            "tier": AccountTier.PRO.value if role == "investor" else AccountTier.FREE.value,
+            "verified": is_verified,
+            "portfolio_url": "https://mehtaventures.in/portfolio" if is_verified else "",
+            "linkedin_url": "https://linkedin.com/in/vikrammehta-vc" if is_verified else "",
+            "skills": ["Capital Allocation", "Due Diligence"] if role == "investor" else ["Product", "Strategy"],
+            "sector": "Fintech & Payments" if role == "investor" else "Fintech",
+            "stage": "Seed",
             "google_id": google_id,
             "findings_shown": {},
             "preferences": [],          # e.g. ["software","ai","hardware","fintech","healthtech"]

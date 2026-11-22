@@ -7,6 +7,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute'
 // Pages
 import Landing from './pages/Landing'
 import Login from './pages/Login'
+import Feed from './pages/Feed'
 import FounderDashboard from './pages/FounderDashboard'
 import InvestorDashboard from './pages/InvestorDashboard'
 import DeckUpload from './pages/DeckUpload'
@@ -41,6 +42,12 @@ function App() {
         }
       >
         <Route
+          path="/feed"
+          element={user?.role === 'investor' ? <InvestorFeed /> : <Feed />}
+        />
+        <Route path="/social-feed" element={<Feed />} />
+        <Route path="/investor-feed" element={<InvestorFeed />} />
+        <Route
           path="/dashboard"
           element={user?.role === 'investor' ? <InvestorDashboard /> : <FounderDashboard />}
         />
@@ -56,7 +63,6 @@ function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/market-analysis" element={<MarketAnalysis />} />
         <Route path="/market-analysis/:deckId" element={<MarketAnalysis />} />
-        <Route path="/feed" element={<InvestorFeed />} />
       </Route>
 
       {/* Fallback */}

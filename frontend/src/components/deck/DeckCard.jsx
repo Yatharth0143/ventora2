@@ -18,9 +18,16 @@ export default function DeckCard({ deck }) {
           <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
             <FileText className="w-5 h-5" />
           </div>
-          <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
-            {deck.language ? deck.language.toUpperCase() : 'EN'}
-          </span>
+          <div className="flex items-center gap-1.5">
+            {deck.video_url && (
+              <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200">
+                🎥 Video
+              </span>
+            )}
+            <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+              {deck.language ? deck.language.toUpperCase() : 'EN'}
+            </span>
+          </div>
         </div>
 
         <h3 className="font-bold text-sm text-slate-900 mt-3 line-clamp-1">{deck.title}</h3>

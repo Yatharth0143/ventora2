@@ -17,8 +17,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Ventora API",
-    description="Trust layer for early-stage fundraising in India",
-    version="1.0.0",
+    description="Trust layer and social network for early-stage fundraising in India",
+    version="2.0.0",
     lifespan=lifespan,
 )
 
@@ -38,6 +38,7 @@ from app.routes import auth, deck, audit, payment, chat, investor, graph, verify
 
 app.include_router(auth.router)
 app.include_router(deck.router)
+app.include_router(feed.router)
 app.include_router(audit.router)
 app.include_router(payment.router)
 app.include_router(chat.router)
@@ -55,13 +56,12 @@ app.include_router(feed.router)
 async def root():
     return {
         "name": "Ventora API",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "status": "running",
-        "description": "Trust layer for early-stage fundraising",
+        "description": "Trust layer and social network for early-stage fundraising",
     }
 
 
 @app.get("/health")
 async def health():
     return {"status": "healthy", "env": settings.APP_ENV}
-

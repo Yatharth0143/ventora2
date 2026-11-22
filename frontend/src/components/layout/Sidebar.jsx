@@ -2,6 +2,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { 
+  Compass, 
   LayoutDashboard, 
   UploadCloud, 
   Users, 
@@ -13,16 +14,17 @@ import {
   ShieldCheck,
   ShieldAlert,
   Sparkles,
-  TrendingUp
+  TrendingUp,
+  Flame
 } from 'lucide-react'
 
 export default function Sidebar({ isOpen, onClose }) {
   const { user, isFounder, isInvestor } = useAuth()
 
   const founderLinks = [
-    { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-    { to: '/feed', label: 'Pitch Feed (Reels)', icon: Sparkles },
-    { to: '/upload', label: 'Upload Pitch Deck', icon: UploadCloud },
+    { to: '/feed', label: 'Social Feed (Pitches)', icon: Compass, badge: 'New' },
+    { to: '/dashboard', label: 'My Dashboard', icon: LayoutDashboard },
+    { to: '/upload', label: 'Upload Pitch & Video', icon: UploadCloud },
     { to: '/market-analysis', label: 'Market Intelligence', icon: TrendingUp },
     { to: '/investors', label: 'Investor Directory', icon: Users },
     { to: '/chat', label: 'Direct Inquiries', icon: MessageSquare },
@@ -33,11 +35,12 @@ export default function Sidebar({ isOpen, onClose }) {
   ]
 
   const investorLinks = [
+    { to: '/feed', label: 'Pitch Stream (Feed)', icon: Compass, badge: 'Deals' },
     { to: '/dashboard', label: 'Investor Desk', icon: LayoutDashboard },
-    { to: '/feed', label: 'Pitch Stream (Feed)', icon: Sparkles },
     { to: '/market-analysis', label: 'Market Intelligence', icon: TrendingUp },
     { to: '/screener', label: 'Batch Screener', icon: Filter },
     { to: '/chat', label: 'Founder Inquiries', icon: MessageSquare },
+    { to: '/cofounders', label: 'Co-Founders & Network', icon: UserPlus },
     { to: '/admin', label: 'Admin & Verdicts', icon: ShieldAlert },
     { to: '/profile', label: 'Verification & Portfolio', icon: User },
   ]
@@ -58,7 +61,7 @@ export default function Sidebar({ isOpen, onClose }) {
         fixed md:sticky top-16 left-0 z-40 h-[calc(100vh-4rem)] w-64 bg-white text-slate-700 border-r border-slate-200/90 flex flex-col justify-between transition-transform duration-200 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
       `}>
-        <div className="p-4 space-y-6 overflow-y-auto">
+        <div className="p-4 space-y-5 overflow-y-auto">
           {/* User Status Card */}
           <div className="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/80">
             <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Account Type</p>
@@ -87,7 +90,7 @@ export default function Sidebar({ isOpen, onClose }) {
           {/* Navigation Links */}
           <nav className="space-y-1">
             <p className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-              Workspace
+              Workspace & Social
             </p>
             {links.map((item) => {
               const Icon = item.icon
@@ -97,15 +100,22 @@ export default function Sidebar({ isOpen, onClose }) {
                   to={item.to}
                   onClick={() => onClose && onClose()}
                   className={({ isActive }) => `
-                    flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all
+                    flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all
                     ${isActive 
-                      ? 'bg-indigo-50 text-indigo-700 font-bold' 
+                      ? 'bg-indigo-50 text-indigo-700 font-bold shadow-2xs' 
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                     }
                   `}
                 >
-                  <Icon className="w-4 h-4" />
-                  {item.label}
+                  <div className="flex items-center gap-3">
+                    <Icon className="w-4 h-4" />
+                    <span>{item.label}</span>
+                  </div>
+                  {item.badge && (
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700">
+                      {item.badge}
+                    </span>
+                  )}
                 </NavLink>
               )
             })}

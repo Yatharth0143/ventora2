@@ -55,11 +55,18 @@ export default function FounderDashboard() {
 
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              to="/upload"
+              to="/feed"
               className="px-5 py-2.5 bg-white text-indigo-900 hover:bg-indigo-50 font-black text-xs rounded-xl shadow-md transition-colors flex items-center gap-2"
             >
-              <UploadCloud className="w-4 h-4 text-indigo-600" />
-              Upload Pitch Deck
+              <span>Explore Social Feed</span>
+            </Link>
+
+            <Link
+              to="/upload"
+              className="px-5 py-2.5 bg-indigo-500/30 hover:bg-indigo-500/40 text-white font-bold text-xs rounded-xl border border-indigo-400/30 transition-colors flex items-center gap-2"
+            >
+              <UploadCloud className="w-4 h-4 text-white" />
+              Upload Pitch & Video
             </Link>
 
             <Link

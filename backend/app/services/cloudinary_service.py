@@ -41,6 +41,45 @@ def upload_deck(file_bytes: bytes, filename: str) -> dict:
         }
 
 
+def upload_video(file_bytes: bytes, filename: str) -> dict:
+    """Upload a pitch video to Cloudinary (resource_type=video)."""
+    ensure_configured()
+    try:
+        res = cloudinary.uploader.upload(
+            file_bytes,
+            resource_type="video",
+            folder="ventora_pitch_videos",
+            public_id=f"pitch_vid_{filename}_{int(cloudinary.utils.now())}",
+            eager=[
+                {"width": 720, "height": 720, "crop": "limit", "format": "mp4"},
+                {"width": 360, "height": 360, "crop": "thumb", "gravity": "auto", "format": "jpg"}
+            ],
+            eager_async=True
+        )
+        thumb_url = ""
+        if res.get("eager") and len(res["eager"]) > 1:
+            thumb_url = res["eager"][1].get("secure_url", "")
+
+        return {
+            "url": res.get("url"),
+            "secure_url": res.get("secure_url"),
+            "public_id": res.get("public_id"),
+            "thumbnail_url": thumb_url or res.get("secure_url", "").replace(".mp4", ".jpg"),
+            "duration": res.get("duration", 0),
+            "format": res.get("format", "mp4")
+        }
+    except Exception as e:
+        # Fallback for dev / mock
+        return {
+            "url": f"/mock_uploads/{filename}",
+            "secure_url": f"/mock_uploads/{filename}",
+            "public_id": f"mock_{filename}",
+            "thumbnail_url": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=600&auto=format&fit=crop&q=80",
+            "duration": 60,
+            "format": "mp4"
+        }
+
+
 def get_signed_url(public_id: str, ttl_seconds: int = 604800) -> str:
     ensure_configured()
     try:
@@ -62,37 +101,3 @@ def delete_file(public_id: str) -> bool:
         return res.get("result") == "ok"
     except Exception:
         return True
-
-
-def upload_video(file_bytes: bytes, filename: str) -> dict:
-    """Upload a pitch video to Cloudinary (resource_type=video)."""
-    ensure_configured()
-    try:
-        res = cloudinary.uploader.upload(
-            file_bytes,
-            resource_type="video",
-            folder="ventora_pitch_videos",
-            public_id=f"pitch_{filename}_{int(cloudinary.utils.now())}",
-            eager=[
-                {"width": 720, "crop": "scale", "format": "mp4"},
-            ],
-            eager_async=True,
-        )
-        return {
-            "url": res.get("url"),
-            "secure_url": res.get("secure_url"),
-            "public_id": res.get("public_id"),
-            "duration": res.get("duration"),
-            "format": res.get("format"),
-            "thumbnail_url": res.get("secure_url", "").replace(f".{res.get('format', 'mp4')}", ".jpg") if res.get("secure_url") else "",
-        }
-    except Exception as e:
-        return {
-            "url": f"/mock_uploads/video_{filename}",
-            "secure_url": f"/mock_uploads/video_{filename}",
-            "public_id": f"mock_video_{filename}",
-            "duration": 0,
-            "format": "mp4",
-            "thumbnail_url": "",
-        }
-

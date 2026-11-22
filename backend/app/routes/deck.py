@@ -4,6 +4,7 @@ from app.middleware.auth_middleware import get_current_user
 from app.services import deck_service, cloudinary_service, hash_chain_service
 from bson import ObjectId
 from app.database import db
+
 router = APIRouter(prefix="/api/deck", tags=["deck"])
 
 
@@ -12,8 +13,9 @@ async def upload_deck(
     file: UploadFile = File(...),
     title: str = Form(...),
     language: str = Form("en"),
+    description: Optional[str] = Form(""),
+    tags: Optional[str] = Form(""),
     video: Optional[UploadFile] = File(None),
-    tags: str = Form(""),
     current_user: dict = Depends(get_current_user)
 ):
     contents = await file.read()
@@ -24,11 +26,19 @@ async def upload_deck(
     cloud_res = cloudinary_service.upload_deck(contents, file.filename)
 
     # Upload optional pitch video
-    video_data = None
+    video_url = ""
+    video_public_id = ""
+    thumbnail_url = ""
     if video and video.filename:
-        video_bytes = await video.read()
-        if video_bytes:
-            video_data = cloudinary_service.upload_video(video_bytes, video.filename)
+        try:
+            video_bytes = await video.read()
+            if video_bytes:
+                video_res = cloudinary_service.upload_video(video_bytes, video.filename)
+                video_url = video_res.get("secure_url") or video_res.get("url", "")
+                video_public_id = video_res.get("public_id", "")
+                thumbnail_url = video_res.get("thumbnail_url", "")
+        except Exception as ve:
+            print(f"Video upload warning: {ve}")
 
     # Parse tags from comma-separated string
     tag_list = [t.strip().lower() for t in tags.split(",") if t.strip()] if tags else []
@@ -41,7 +51,10 @@ async def upload_deck(
         public_id=cloud_res.get("public_id"),
         filename=file.filename,
         language=language,
-        video_data=video_data,
+        description=description or "",
+        video_url=video_url,
+        video_public_id=video_public_id,
+        thumbnail_url=thumbnail_url,
         tags=tag_list,
     )
 
@@ -51,33 +64,45 @@ async def upload_deck(
     try:
         raw_text, page_texts = deck_service.parse_deck_text(contents)
         sections = deck_service.build_sections(page_texts)
+        auto_sectors = deck_service.auto_detect_sectors(raw_text)
+        auto_tags = deck_service.auto_generate_tags(raw_text, title)
+        combined_tags = list(set(tag_list + auto_tags))
+
         await deck_service.update_deck(deck_doc["_id"], {
             "raw_text": raw_text,
             "sections": sections,
-            "status": "parsed"
+            "sectors": auto_sectors,
+            "tags": combined_tags,
+            "status": "parsed",
+            "has_video": bool(video_url),
         })
         deck_doc["raw_text"] = raw_text
         deck_doc["sections"] = sections
+        deck_doc["sectors"] = auto_sectors
+        deck_doc["tags"] = combined_tags
         deck_doc["status"] = "parsed"
+        deck_doc["has_video"] = bool(video_url)
     except Exception as e:
-        # Fallback text for non-PDF or encrypted
         raw_text = f"Startup: {title}\nSummary pitch presentation file uploaded."
+        auto_sectors = deck_service.auto_detect_sectors(title)
+        auto_tags = deck_service.auto_generate_tags(title, title)
+        combined_tags = list(set(tag_list + auto_tags))
         await deck_service.update_deck(deck_doc["_id"], {
             "raw_text": raw_text,
-            "status": "uploaded"
+            "sectors": auto_sectors,
+            "tags": combined_tags,
+            "status": "uploaded",
+            "has_video": bool(video_url),
         })
-
-    # Auto-detect tags from raw_text if none were given
-    if not tag_list and raw_text:
-        tag_list = deck_service.auto_detect_tags(raw_text, title)
-        if tag_list:
-            await deck_service.update_deck(deck_doc["_id"], {"tags": tag_list})
-            deck_doc["tags"] = tag_list
+        deck_doc["raw_text"] = raw_text
+        deck_doc["sectors"] = auto_sectors
+        deck_doc["tags"] = combined_tags
+        deck_doc["has_video"] = bool(video_url)
 
     # Log to tamper-evident hash chain
     await hash_chain_service.append_event(
         event_type="deck_upload",
-        payload={"deck_id": deck_doc["_id"], "title": title, "filename": file.filename, "has_video": video_data is not None},
+        payload={"deck_id": deck_doc["_id"], "title": title, "filename": file.filename, "has_video": bool(video_url)},
         user_id=current_user["_id"]
     )
 
@@ -86,7 +111,6 @@ async def upload_deck(
 
 @router.get("/list")
 async def list_decks(current_user: dict = Depends(get_current_user)):
-    # Investors and admins can view all uploaded decks for analysis and screening
     if current_user.get("role") in ["investor", "admin"]:
         cursor = db.get_db().decks.find({"is_garbage_idea": {"$ne": True}}).sort("created_at", -1)
         decks = []
@@ -104,8 +128,9 @@ async def get_deck_detail(deck_id: str, current_user: dict = Depends(get_current
     deck = await deck_service.get_deck(deck_id)
     if not deck:
         raise HTTPException(status_code=404, detail="Deck not found")
-    if str(deck.get("founder_id")) != str(current_user["_id"]):
-        raise HTTPException(status_code=403, detail="Access denied")
+
+    await deck_service.increment_views(deck_id)
+
     # Log view to hash chain
     await hash_chain_service.append_event(
         event_type="deck_view",
@@ -114,4 +139,3 @@ async def get_deck_detail(deck_id: str, current_user: dict = Depends(get_current
     )
 
     return {"deck": deck}
-

@@ -263,10 +263,20 @@ async def seed():
     demo_decks = [
         {
             "founder_id": inserted_users["priya@example.com"],
+            "founder_name": "Priya Sharma",
             "title": "FinFlow — Neo-Banking for Bharat SMEs",
-            "file_url": "https://cloudinary.com/demo_finflow.pdf",
+            "description": "WhatsApp-first invoice discounting and instant working capital for 60M unbanked SMEs across Tier 2/3 India. ₹1.2 Cr ARR with 35% MoM growth.",
+            "file_url": "https://res.cloudinary.com/demo/image/upload/sample.pdf",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+            "thumbnail_url": "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=600&auto=format&fit=crop&q=80",
             "language": "hi",
             "status": "audited",
+            "tags": ["fintech", "upi", "b2b", "india", "seed"],
+            "sectors": ["fintech"],
+            "stage": "Seed",
+            "views": 142,
+            "likes": [inserted_users.get("vikram@example.com", "v1"), inserted_users.get("sanjay@example.com", "s1")],
+            "bookmarks": [inserted_users.get("vikram@example.com", "v1")],
             "raw_text": """FinFlow: भारत के लघु उद्योगों के लिए डिजिटल वित्तीय समाधान।
 समस्या: भारत में 6 करोड़ एमएसएमई (MSME) हैं जिन्हें औपचारिक बैंकिंग ऋण नहीं मिल पाता।
 हमारा समाधान: व्हाट्सएप आधारित त्वरित इनवॉइस डिस्काउंटिंग और क्रेडिट असेसमेंट।
@@ -284,10 +294,20 @@ async def seed():
         },
         {
             "founder_id": inserted_users["arjun@example.com"],
-            "title": "HealthPulse — AI Remote Diagnostics",
-            "file_url": "https://cloudinary.com/demo_healthpulse.pdf",
+            "founder_name": "Arjun Patel",
+            "title": "HealthPulse — AI Remote Diagnostics for Rural ICUs",
+            "description": "Continuous acoustic & biometric ML vital telemetry bringing specialist-level ICU care to 70% of underserved rural hospitals across India.",
+            "file_url": "https://res.cloudinary.com/demo/image/upload/sample.pdf",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+            "thumbnail_url": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=600&auto=format&fit=crop&q=80",
             "language": "en",
             "status": "audited",
+            "tags": ["healthcare", "ai", "b2b", "india", "pre-seed"],
+            "sectors": ["healthcare", "ai"],
+            "stage": "Pre-Seed",
+            "views": 218,
+            "likes": [inserted_users.get("priya@example.com", "p1"), inserted_users.get("vikram@example.com", "v1")],
+            "bookmarks": [inserted_users.get("priya@example.com", "p1")],
             "raw_text": """HealthPulse AI: Continuous Vital Telemetry for Tier-2 ICU Systems.
 Problem: Critical care access is centralized in top 8 metro cities. 70% of rural ICUs lack dedicated intensivists.
 Solution: Real-time ML acoustic and biometric analysis directly from low-cost pulse ox monitors.
@@ -298,6 +318,28 @@ Ask: Raising $500,000 for clinical device certification and team expansion.""",
                 {"title": "Problem", "page_number": 1, "content": "70% of rural ICUs lack dedicated intensivists.", "quotes": ["70% of rural ICUs lack dedicated intensivists."]},
                 {"title": "Market", "page_number": 2, "content": "$4.5B Indian healthcare diagnostics TAM.", "quotes": ["$4.5B Indian healthcare diagnostics TAM growing at 18% CAGR."]},
                 {"title": "Traction", "page_number": 3, "content": "12 hospital pilots deployed, ₹45 Lakhs ARR pipeline.", "quotes": ["12 hospital pilots deployed across Maharashtra and Gujarat.", "₹45 Lakhs ARR contract pipeline."]}
+            ],
+            "created_at": datetime.now(timezone.utc)
+        },
+        {
+            "founder_id": inserted_users.get("rohan@example.com", inserted_users["priya@example.com"]),
+            "founder_name": "Rohan Deshmukh",
+            "title": "AgriScale — Drone-Assisted Precision Crop Yields",
+            "description": "Hyperlocal hyperspectral drone imaging and AI pest prediction providing smallholder farmers in Punjab & Haryana guaranteed 22% yield improvement.",
+            "file_url": "https://res.cloudinary.com/demo/image/upload/sample.pdf",
+            "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+            "thumbnail_url": "https://images.unsplash.com/photo-1592982537447-7440770cbfc9?w=600&auto=format&fit=crop&q=80",
+            "language": "en",
+            "status": "audited",
+            "tags": ["agritech", "ai", "cleantech", "india", "seed"],
+            "sectors": ["agritech", "cleantech"],
+            "stage": "Seed",
+            "views": 95,
+            "likes": [inserted_users.get("priya@example.com", "p1")],
+            "bookmarks": [],
+            "raw_text": """AgriScale: Precision drone analytics for Indian smallholder farmers. 15,000 acres covered. Raising ₹2.5 Crore Seed.""",
+            "sections": [
+                {"title": "Overview", "page_number": 1, "content": "Drone imaging for agriculture. 15,000 acres monitored.", "quotes": ["Drone imaging for agriculture."]}
             ],
             "created_at": datetime.now(timezone.utc)
         }

@@ -45,6 +45,15 @@ export const uploadDeck = (formData) => api.post('/deck/upload', formData, {
 export const listDecks = () => api.get('/deck/list')
 export const getDeck = (id) => api.get(`/deck/${id}`)
 
+// Social Feed (Instagram-like for Investors & Founders)
+export const getFeed = (params) => api.get('/feed', { params })
+export const getTrendingTags = () => api.get('/feed/trending-tags')
+export const likeDeck = (deckId) => api.post(`/feed/${deckId}/like`)
+export const bookmarkDeck = (deckId) => api.post(`/feed/${deckId}/bookmark`)
+export const saveDeckBookmark = (deckId) => api.post(`/feed/${deckId}/save`)
+export const commentDeck = (deckId, text) => api.post(`/feed/${deckId}/comment`, { text })
+export const recordDeckView = (deckId) => api.post(`/feed/${deckId}/view`)
+
 // Audit
 export const runAudit = (deckId) => api.post(`/audit/${deckId}/run`)
 export const getFindings = (deckId) => api.get(`/audit/${deckId}/findings`)
@@ -108,12 +117,6 @@ export const getRecentMarketAnalyses = () => api.get('/market-analysis')
 
 // User Interest Preferences
 export const setPreferences = (preferences) => api.post('/auth/preferences', { preferences })
-
-// Instagram-style Investor Pitch Feed
-export const getFeed = (params) => api.get('/feed', { params })
-export const likeDeck = (deckId) => api.post(`/feed/${deckId}/like`)
-export const saveDeckBookmark = (deckId) => api.post(`/feed/${deckId}/save`)
-export const commentDeck = (deckId, text) => api.post(`/feed/${deckId}/comment`, { text })
 
 
 

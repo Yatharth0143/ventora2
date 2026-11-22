@@ -87,7 +87,7 @@ export default function InvestorDashboard() {
             className="px-5 py-3 bg-gradient-to-r from-pink-500 via-rose-500 to-indigo-600 hover:opacity-95 text-white font-bold text-xs rounded-xl shadow-lg shadow-pink-500/20 flex items-center justify-center gap-2 transition-all"
           >
             <Sparkles className="w-4 h-4" />
-            Open Pitch Stream (Feed)
+            Open Social Pitch Stream
           </Link>
           <Link
             to="/screener"

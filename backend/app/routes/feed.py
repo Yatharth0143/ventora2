@@ -139,9 +139,60 @@ async def get_investor_feed(
 
     return {
         "feed": enriched_feed,
+        "posts": enriched_feed,
         "user_preferences": user_prefs,
         "count": len(enriched_feed)
     }
+
+
+@router.get("/trending-tags")
+async def get_trending_tags(current_user: dict = Depends(get_current_user)):
+    return {
+        "tags": [
+            {"name": "healthcare", "count": 28, "emoji": "🏥"},
+            {"name": "fintech", "count": 45, "emoji": "💳"},
+            {"name": "ai", "count": 41, "emoji": "🤖"},
+            {"name": "saas", "count": 33, "emoji": "☁️"},
+            {"name": "software", "count": 38, "emoji": "💻"},
+            {"name": "hardware", "count": 18, "emoji": "⚡"},
+            {"name": "edtech", "count": 22, "emoji": "📚"},
+            {"name": "cleantech", "count": 18, "emoji": "🌱"},
+            {"name": "ecommerce", "count": 29, "emoji": "🛒"},
+            {"name": "agritech", "count": 14, "emoji": "🌾"},
+            {"name": "b2b", "count": 37, "emoji": "🏢"},
+            {"name": "upi", "count": 25, "emoji": "⚡"},
+        ]
+    }
+
+
+@router.post("/{deck_id}/bookmark")
+async def toggle_bookmark(deck_id: str, current_user: dict = Depends(get_current_user)):
+    user_id_str = str(current_user["_id"])
+    existing = await db.get_db().deck_saves.find_one({"deck_id": deck_id, "user_id": user_id_str})
+    if existing:
+        await db.get_db().deck_saves.delete_one({"_id": existing["_id"]})
+        action = "removed"
+    else:
+        await db.get_db().deck_saves.insert_one({
+            "deck_id": deck_id,
+            "user_id": user_id_str,
+            "created_at": datetime.utcnow()
+        })
+        action = "bookmarked"
+    saves_count = await db.get_db().deck_saves.count_documents({"deck_id": deck_id})
+    return {"action": action, "saves_count": saves_count}
+
+
+@router.post("/{deck_id}/view")
+async def record_view(deck_id: str, current_user: dict = Depends(get_current_user)):
+    try:
+        await db.get_db().decks.update_one(
+            {"_id": ObjectId(deck_id)},
+            {"$inc": {"views": 1}}
+        )
+    except Exception:
+        pass
+    return {"status": "recorded"}
 
 
 @router.post("/{deck_id}/like")

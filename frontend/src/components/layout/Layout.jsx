@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import Navbar from './Navbar'
 import Sidebar from './Sidebar'
+import BottomNav from './BottomNav'
 import PreferencesModal from '../profile/PreferencesModal'
 
 export default function Layout() {
@@ -32,7 +33,7 @@ export default function Layout() {
       <div className="flex-1 flex">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         
-        <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full overflow-x-hidden">
+        <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full overflow-x-hidden pb-24 md:pb-8">
           <Outlet />
         </main>
       </div>
@@ -42,6 +43,9 @@ export default function Layout() {
         isOpen={showPreferences}
         onClose={handleClosePreferences}
       />
+
+      {/* Mobile Navigation */}
+      <BottomNav />
     </div>
   )
 }

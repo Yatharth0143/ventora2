@@ -68,14 +68,14 @@ export default function Landing() {
             to="/login"
             className="w-full sm:w-auto px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-black text-sm rounded-2xl shadow-xl shadow-indigo-600/30 transition-all flex items-center justify-center gap-2"
           >
-            Upload Deck & Get 3 Free Findings
+            Explore Social Feed & Pitches
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             to="/login"
             className="w-full sm:w-auto px-8 py-4 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm rounded-2xl border border-slate-700 transition-all flex items-center justify-center gap-2"
           >
-            Sign In as Verified Investor
+            Sign In with Demo Credentials
           </Link>
         </div>
 

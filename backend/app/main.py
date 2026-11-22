@@ -34,7 +34,7 @@ app.add_middleware(
 )
 
 # Import and register routers
-from app.routes import auth, deck, audit, payment, chat, investor, graph, verify, marketing, screener, admin, market_analysis  # noqa: E402
+from app.routes import auth, deck, audit, payment, chat, investor, graph, verify, marketing, screener, admin, market_analysis, feed  # noqa: E402
 
 app.include_router(auth.router)
 app.include_router(deck.router)
@@ -48,6 +48,7 @@ app.include_router(marketing.router)
 app.include_router(screener.router)
 app.include_router(admin.router)
 app.include_router(market_analysis.router)
+app.include_router(feed.router)
 
 
 @app.get("/")

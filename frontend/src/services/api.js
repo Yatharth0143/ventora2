@@ -106,5 +106,15 @@ export const getMarketAnalysis = (deckId) => api.get(`/market-analysis/${deckId}
 export const analyzeCustomMarket = (data) => api.post('/market-analysis/custom/analyze', data)
 export const getRecentMarketAnalyses = () => api.get('/market-analysis')
 
+// User Interest Preferences
+export const setPreferences = (preferences) => api.post('/auth/preferences', { preferences })
+
+// Instagram-style Investor Pitch Feed
+export const getFeed = (params) => api.get('/feed', { params })
+export const likeDeck = (deckId) => api.post(`/feed/${deckId}/like`)
+export const saveDeckBookmark = (deckId) => api.post(`/feed/${deckId}/save`)
+export const commentDeck = (deckId, text) => api.post(`/feed/${deckId}/comment`, { text })
+
+
 
 

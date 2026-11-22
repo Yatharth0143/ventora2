@@ -22,7 +22,8 @@ import {
   BarChart3, 
   CheckCircle2,
   Lock,
-  ArrowRight
+  ArrowRight,
+  Video
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
@@ -127,6 +128,24 @@ export default function AuditViewer() {
           </button>
         </div>
       </div>
+
+      {/* Founder Video Pitch Player if available */}
+      {deck?.has_video && deck?.video_url && (
+        <div className="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-md">
+          <div className="p-3 bg-slate-950/90 px-4 flex items-center justify-between border-b border-slate-800">
+            <span className="text-xs font-bold text-white flex items-center gap-1.5">
+              <Video className="w-4 h-4 text-purple-400" />
+              Founder Video Pitch Elevator Reel
+            </span>
+            <span className="text-[10px] text-purple-300 font-semibold px-2 py-0.5 rounded-full bg-purple-950 border border-purple-800">
+              Verified Pitch Media
+            </span>
+          </div>
+          <div className="max-h-80 w-full flex items-center justify-center bg-black">
+            <video src={deck.video_url} controls playsInline className="max-h-80 w-full object-contain" />
+          </div>
+        </div>
+      )}
 
       {/* Freemium Banner if Gated (USP 8) */}
       {isGated && (

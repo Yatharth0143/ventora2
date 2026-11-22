@@ -20,6 +20,7 @@ import MarketingAnalysis from './pages/MarketingAnalysis'
 import Profile from './pages/Profile'
 import AdminPage from './pages/AdminPage'
 import MarketAnalysis from './pages/MarketAnalysis'
+import InvestorFeed from './pages/InvestorFeed'
 
 function App() {
   const { user } = useAuth()
@@ -55,6 +56,7 @@ function App() {
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/market-analysis" element={<MarketAnalysis />} />
         <Route path="/market-analysis/:deckId" element={<MarketAnalysis />} />
+        <Route path="/feed" element={<InvestorFeed />} />
       </Route>
 
       {/* Fallback */}

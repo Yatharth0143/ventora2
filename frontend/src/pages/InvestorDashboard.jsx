@@ -81,13 +81,22 @@ export default function InvestorDashboard() {
           </p>
         </div>
 
-        <Link
-          to="/screener"
-          className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/30 flex items-center gap-2 shrink-0 transition-colors"
-        >
-          <Filter className="w-4 h-4" />
-          Batch Red-Flag Screener
-        </Link>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0">
+          <Link
+            to="/feed"
+            className="px-5 py-3 bg-gradient-to-r from-pink-500 via-rose-500 to-indigo-600 hover:opacity-95 text-white font-bold text-xs rounded-xl shadow-lg shadow-pink-500/20 flex items-center justify-center gap-2 transition-all"
+          >
+            <Sparkles className="w-4 h-4" />
+            Open Pitch Stream (Feed)
+          </Link>
+          <Link
+            to="/screener"
+            className="px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 transition-colors"
+          >
+            <Filter className="w-4 h-4" />
+            Batch Screener
+          </Link>
+        </div>
       </div>
 
       {/* Verification Card if not verified */}

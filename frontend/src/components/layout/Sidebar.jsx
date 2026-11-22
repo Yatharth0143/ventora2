@@ -21,6 +21,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
   const founderLinks = [
     { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+    { to: '/feed', label: 'Pitch Feed (Reels)', icon: Sparkles },
     { to: '/upload', label: 'Upload Pitch Deck', icon: UploadCloud },
     { to: '/market-analysis', label: 'Market Intelligence', icon: TrendingUp },
     { to: '/investors', label: 'Investor Directory', icon: Users },
@@ -33,6 +34,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
   const investorLinks = [
     { to: '/dashboard', label: 'Investor Desk', icon: LayoutDashboard },
+    { to: '/feed', label: 'Pitch Stream (Feed)', icon: Sparkles },
     { to: '/market-analysis', label: 'Market Intelligence', icon: TrendingUp },
     { to: '/screener', label: 'Batch Screener', icon: Filter },
     { to: '/chat', label: 'Founder Inquiries', icon: MessageSquare },

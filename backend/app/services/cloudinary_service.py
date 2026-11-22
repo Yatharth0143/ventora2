@@ -63,3 +63,36 @@ def delete_file(public_id: str) -> bool:
     except Exception:
         return True
 
+
+def upload_video(file_bytes: bytes, filename: str) -> dict:
+    """Upload a pitch video to Cloudinary (resource_type=video)."""
+    ensure_configured()
+    try:
+        res = cloudinary.uploader.upload(
+            file_bytes,
+            resource_type="video",
+            folder="ventora_pitch_videos",
+            public_id=f"pitch_{filename}_{int(cloudinary.utils.now())}",
+            eager=[
+                {"width": 720, "crop": "scale", "format": "mp4"},
+            ],
+            eager_async=True,
+        )
+        return {
+            "url": res.get("url"),
+            "secure_url": res.get("secure_url"),
+            "public_id": res.get("public_id"),
+            "duration": res.get("duration"),
+            "format": res.get("format"),
+            "thumbnail_url": res.get("secure_url", "").replace(f".{res.get('format', 'mp4')}", ".jpg") if res.get("secure_url") else "",
+        }
+    except Exception as e:
+        return {
+            "url": f"/mock_uploads/video_{filename}",
+            "secure_url": f"/mock_uploads/video_{filename}",
+            "public_id": f"mock_video_{filename}",
+            "duration": 0,
+            "format": "mp4",
+            "thumbnail_url": "",
+        }
+

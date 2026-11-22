@@ -54,7 +54,7 @@ def build_sections(page_texts: list[dict]) -> list[dict]:
     return sections
 
 
-async def save_deck(founder_id: str, title: str, file_url: str, public_id: str, filename: str, language: str = "en") -> dict:
+async def save_deck(founder_id: str, title: str, file_url: str, public_id: str, filename: str, language: str = "en", video_data: dict = None, tags: list = None) -> dict:
     deck_doc = {
         "founder_id": str(founder_id),
         "title": title,
@@ -64,9 +64,23 @@ async def save_deck(founder_id: str, title: str, file_url: str, public_id: str, 
         "language": language,
         "sections": [],
         "raw_text": "",
+        "tags": tags or [],
         "status": "uploaded",
         "created_at": datetime.utcnow(),
     }
+
+    # Optional video pitch
+    if video_data:
+        deck_doc["video_url"] = video_data.get("secure_url") or video_data.get("url", "")
+        deck_doc["video_public_id"] = video_data.get("public_id", "")
+        deck_doc["video_thumbnail_url"] = video_data.get("thumbnail_url", "")
+        deck_doc["video_duration"] = video_data.get("duration", 0)
+        deck_doc["has_video"] = True
+    else:
+        deck_doc["has_video"] = False
+        deck_doc["video_url"] = ""
+        deck_doc["video_thumbnail_url"] = ""
+
     res = await db.get_db().decks.insert_one(deck_doc)
     deck_doc["_id"] = str(res.inserted_id)
     return deck_doc
@@ -97,4 +111,38 @@ async def update_deck(deck_id: str, update_fields: dict) -> dict | None:
         return await get_deck(deck_id)
     except Exception:
         return None
+
+
+TAG_KEYWORDS = {
+    "software": ["software", "saas", "platform", "app", "web app", "mobile app", "cloud"],
+    "ai": ["ai", "artificial intelligence", "machine learning", "ml", "deep learning", "llm", "nlp", "computer vision", "neural", "genai", "generative"],
+    "hardware": ["hardware", "iot", "device", "sensor", "chip", "semiconductor", "embedded", "robotics", "drone"],
+    "fintech": ["fintech", "upi", "payment", "lending", "credit", "neobank", "insurance", "insurtech", "banking", "wallet", "defi", "blockchain"],
+    "healthtech": ["health", "medtech", "pharma", "biotech", "telemedicine", "diagnostics", "clinical", "patient", "hospital", "wellness"],
+    "edtech": ["edtech", "education", "learning", "student", "school", "course", "tutoring", "upskilling", "lms"],
+    "d2c": ["d2c", "consumer", "brand", "ecommerce", "e-commerce", "retail", "cpg", "fmcg", "fashion"],
+    "cleantech": ["cleantech", "climate", "solar", "renewable", "ev", "electric vehicle", "sustainability", "carbon", "green"],
+    "agritech": ["agritech", "agriculture", "farm", "crop", "rural", "farmer", "agri"],
+    "logistics": ["logistics", "supply chain", "warehouse", "freight", "delivery", "fulfillment", "fleet"],
+    "deeptech": ["deeptech", "quantum", "space", "aerospace", "material science", "nanotechnology"],
+    "gaming": ["gaming", "game", "esports", "metaverse", "vr", "ar", "virtual reality", "augmented reality"],
+    "social": ["social", "community", "creator", "influencer", "content", "media", "network"],
+    "cybersecurity": ["cybersecurity", "security", "encryption", "firewall", "identity", "fraud", "authentication"],
+    "proptech": ["proptech", "real estate", "property", "construction", "housing"],
+    "foodtech": ["foodtech", "food", "restaurant", "cloud kitchen", "grocery", "meal"],
+    "b2b": ["b2b", "enterprise", "business", "smb", "sme", "corporate"],
+    "marketplace": ["marketplace", "aggregator", "platform economy", "two-sided"],
+}
+
+
+def auto_detect_tags(raw_text: str, title: str = "") -> list[str]:
+    """Auto-detect sector/interest tags from pitch deck text."""
+    combined = (title + " " + raw_text).lower()
+    detected = []
+    for tag, keywords in TAG_KEYWORDS.items():
+        for kw in keywords:
+            if kw in combined:
+                detected.append(tag)
+                break
+    return detected[:8]  # limit to top 8 tags
 

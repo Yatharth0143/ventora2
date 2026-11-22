@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Form, status
+from typing import Optional
 from app.middleware.auth_middleware import get_current_user
 from app.services import deck_service, cloudinary_service, hash_chain_service
 from bson import ObjectId
@@ -11,14 +12,26 @@ async def upload_deck(
     file: UploadFile = File(...),
     title: str = Form(...),
     language: str = Form("en"),
+    video: Optional[UploadFile] = File(None),
+    tags: str = Form(""),
     current_user: dict = Depends(get_current_user)
 ):
     contents = await file.read()
     if not contents:
         raise HTTPException(status_code=400, detail="Empty file uploaded")
 
-    # Upload to Cloudinary
+    # Upload PDF to Cloudinary
     cloud_res = cloudinary_service.upload_deck(contents, file.filename)
+
+    # Upload optional pitch video
+    video_data = None
+    if video and video.filename:
+        video_bytes = await video.read()
+        if video_bytes:
+            video_data = cloudinary_service.upload_video(video_bytes, video.filename)
+
+    # Parse tags from comma-separated string
+    tag_list = [t.strip().lower() for t in tags.split(",") if t.strip()] if tags else []
 
     # Save initial record
     deck_doc = await deck_service.save_deck(
@@ -28,6 +41,8 @@ async def upload_deck(
         public_id=cloud_res.get("public_id"),
         filename=file.filename,
         language=language,
+        video_data=video_data,
+        tags=tag_list,
     )
 
     # Parse PDF contents
@@ -52,10 +67,17 @@ async def upload_deck(
             "status": "uploaded"
         })
 
+    # Auto-detect tags from raw_text if none were given
+    if not tag_list and raw_text:
+        tag_list = deck_service.auto_detect_tags(raw_text, title)
+        if tag_list:
+            await deck_service.update_deck(deck_doc["_id"], {"tags": tag_list})
+            deck_doc["tags"] = tag_list
+
     # Log to tamper-evident hash chain
     await hash_chain_service.append_event(
         event_type="deck_upload",
-        payload={"deck_id": deck_doc["_id"], "title": title, "filename": file.filename},
+        payload={"deck_id": deck_doc["_id"], "title": title, "filename": file.filename, "has_video": video_data is not None},
         user_id=current_user["_id"]
     )
 

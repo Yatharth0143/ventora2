@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { updateProfile } from '../services/api'
-import { User, ShieldCheck, Sparkles, Building2, ExternalLink } from 'lucide-react'
+import { User, ShieldCheck, Sparkles, Building2, ExternalLink, Tag } from 'lucide-react'
+import { PREFERENCE_OPTIONS } from '../components/profile/PreferencesModal'
 import toast from 'react-hot-toast'
 
 export default function Profile() {
@@ -11,7 +12,16 @@ export default function Profile() {
   const [stage, setStage] = useState(user?.stage || '')
   const [portfolioUrl, setPortfolioUrl] = useState(user?.portfolio_url || '')
   const [linkedinUrl, setLinkedinUrl] = useState(user?.linkedin_url || '')
+  const [preferences, setPreferences] = useState(user?.preferences || ['software', 'ai'])
   const [saving, setSaving] = useState(false)
+
+  const togglePreference = (id) => {
+    if (preferences.includes(id)) {
+      setPreferences(preferences.filter((p) => p !== id))
+    } else {
+      setPreferences([...preferences, id])
+    }
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -23,9 +33,10 @@ export default function Profile() {
         stage,
         portfolio_url: portfolioUrl,
         linkedin_url: linkedinUrl,
+        preferences,
       })
       updateUser(res.data.user)
-      toast.success('Profile updated successfully')
+      toast.success('Profile and feed preferences updated!')
     } catch (err) {
       toast.error('Failed to update profile')
     } finally {
@@ -116,6 +127,40 @@ export default function Profile() {
               placeholder="https://linkedin.com/in/username"
               className="w-full text-xs px-3.5 py-2.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
             />
+          </div>
+
+          {/* Feed Tech & Sector Interests */}
+          <div className="pt-2 border-t border-slate-100 space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="block text-[11px] font-bold uppercase text-slate-700 flex items-center gap-1.5">
+                <Tag className="w-3.5 h-3.5 text-indigo-600" />
+                Pitch Feed & Deal Stream Preferences
+              </label>
+              <span className="text-[10px] text-slate-400 font-semibold">{preferences.length} selected</span>
+            </div>
+            <p className="text-[11px] text-slate-500">
+              Pitch decks matching these tags will be prioritized in your Instagram-style deal feed.
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
+              {PREFERENCE_OPTIONS.map((opt) => {
+                const active = preferences.includes(opt.id)
+                return (
+                  <button
+                    type="button"
+                    key={opt.id}
+                    onClick={() => togglePreference(opt.id)}
+                    className={`p-2.5 rounded-xl border text-left text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 ${
+                      active
+                        ? 'border-indigo-600 bg-indigo-50/70 text-indigo-900 shadow-xs'
+                        : 'border-slate-200 hover:border-slate-300 text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span>{opt.icon}</span>
+                    <span className="truncate">{opt.label}</span>
+                  </button>
+                )
+              })}
+            </div>
           </div>
 
           <button

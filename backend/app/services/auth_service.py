@@ -59,6 +59,9 @@ async def get_or_create_user(email: str, name: str, picture: str = "", google_id
             "stage": "",
             "google_id": google_id,
             "findings_shown": {},
+            "preferences": [],          # e.g. ["software","ai","hardware","fintech","healthtech"]
+            "preferences_set": False,    # True once user picks preferences
+            "bio": "",
             "created_at": datetime.utcnow(),
         }
         res = await users_coll.insert_one(new_user)

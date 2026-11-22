@@ -38,7 +38,7 @@ class Settings(BaseSettings):
     ADMIN_EMAILS: str = "admin@ventora.in"
 
     # CORS
-    CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
+    CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000,https://ventora2.vercel.app,https://ventora.vercel.app"
 
     # App
     APP_ENV: str = "development"

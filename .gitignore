@@ -38,11 +38,12 @@ htmlcov/
 .env.local
 .env.*.local
 
-# IDE
+# IDE & Temp
 .vscode/
 .idea/
 *.swp
 *.swo
+*.bak
 
 # OS
 .DS_Store

@@ -1,9 +1,4 @@
 # VENTORA Market Size and Market-Open Evidence
-
-**Author:** [@khushi](https://github.com/khushi2006y)  
-**Date:** Nov 22, 2026  
-**Repository:** [Yatharth0143/ventora2](https://github.com/Yatharth0143/ventora2)
-
 ---
 
 ## What the brief shows
